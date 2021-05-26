@@ -1,0 +1,13 @@
+body {
+    align-items: center;
+    background-color: black;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    overflow: hidden;
+    width: 100vw;
+}
+
+#game {
+    background-color: #00177D;
+}
