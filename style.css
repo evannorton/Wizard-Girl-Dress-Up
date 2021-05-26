@@ -6,8 +6,26 @@ body {
     justify-content: center;
     overflow: hidden;
     width: 100vw;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -o-crisp-edges;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
 }
 
 #game {
     background-color: #00177D;
+    position: relative;
+}
+
+#base {
+    bottom: 0;
+    margin-bottom: auto;
+    margin-top: auto;
+    top: 0;
+}
+
+img {
+    position: absolute;
 }
