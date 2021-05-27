@@ -4,17 +4,21 @@ const aspectRatio = screenWidth / screenHeight;
 
 const gameElement = document.getElementById("game");
 const baseElement = document.getElementById("base");
-const layerIconsElement = document.getElementById("layer-icons");
+const layersIconsElement = document.getElementById("layers-icons");
+const layersComponentsElement = document.getElementById("layers-components");
+
+const layers = [];
+const components = [];
 
 let scale = 1;
 
-let loadedLayerIcons = 0;
+let loadedLayerIconImages = 0;
+let loadedComponentImages = 0;
 
-const layers = [];
+const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
+const componentImagesLoaded = () => loadedComponentImages === components.length;
 
-const layerIconImagesLoaded = () => loadedLayerIcons === layers.length;
-
-const imagesLoaded = () => layerIconImagesLoaded();
+const imagesLoaded = () => layerIconImagesLoaded() && componentImagesLoaded();
 
 const getPX = (px) => `${px * scale}px`;
 const getElmWidth = (elm) => Number(elm.getAttribute("width"));
@@ -23,14 +27,7 @@ const getElmHeight = (elm) => Number(elm.getAttribute("height"));
 const getElmHeightPX = (elm) => getPX(getElmHeight(elm));
 const getSumOfNumbers = (numbers) => numbers.reduce((a, b) => a + b, 0);
 
-const setImageDimensions = () => {
-    for (const elm of document.getElementsByTagName("img")) {
-        elm.width = elm.width;
-        elm.height = elm.height;
-    }
-};
-
-const sizeGame = () => {
+const render = () => {
     scale = innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
     gameElement.style.width = getPX(screenWidth);
     gameElement.style.height = getPX(screenHeight);
@@ -41,48 +38,68 @@ const sizeGame = () => {
     const offset = Math.floor((screenHeight - getElmHeight(baseElement)) / 2);
     baseElement.style.left = getPX(offset);
     baseElement.style.top = getPX(offset);
-    const iconsWidth = getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * .025 * screenWidth;
+    const betweenIcons = Math.floor(.025 * screenWidth);
+    const iconsWidth = getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * betweenIcons;
     const iconsRegionXStart = offset * 2 + getElmWidth(baseElement);
     const iconsRegionXEnd = screenWidth - offset;
     const iconsRegionWidth = iconsRegionXEnd - iconsRegionXStart;
     const iconsXStart = iconsRegionXStart + Math.floor((iconsRegionWidth - iconsWidth) / 2);
     layers.forEach((layer, key) => {
-        layer.iconElement.style.left = getPX(iconsXStart + key * (getElmWidth(layer.iconElement) + Math.floor(.025 * screenWidth)));
+        layer.iconElement.style.left = getPX(iconsXStart + key * (getElmWidth(layer.iconElement) + betweenIcons));
         layer.iconElement.style.top = getPX(offset);
+    });
+    const componentsXStart = iconsXStart;
+    const componentsYStart = Math.floor(offset + betweenIcons * 2.5);
+    components.forEach((component) => {
+        component.element.style.top = getPX(componentsYStart + component.y);
+        component.element.style.left = getPX(componentsXStart + component.x);
     });
 };
 
 const onWindowResize = () => {
-    sizeGame();
+    render();
 };
 
 const init = () => {
     gameElement.classList.add("loaded");
-    setImageDimensions();
-    sizeGame();
+    for (const elm of document.getElementsByTagName("img")) {
+        elm.width = elm.width;
+        elm.height = elm.height;
+        elm.ondragstart = () => false;
+    }
+    render();
     addEventListener("resize", onWindowResize);
+};
+
+const initIfImagesLoaded = () => {
+    if (imagesLoaded()) {
+        init();
+    }
 };
 
 class Layer {
     constructor(slug, zIndex) {
         this.slug = slug;
         this.zIndex = zIndex;
+
         this.iconElement = document.createElement("img");
+        layersIconsElement.appendChild(this.iconElement);
         this.iconElement.classList.add("layer-icon");
         this.iconElement.setAttribute("data-layer", slug);
         this.iconElement.addEventListener("click", this.onIconElementClick);
         this.iconElement.addEventListener("load", this.onIconElementLoad);
-        this.iconElement.src = `./layer-icons/${slug}.png`;
-        layerIconsElement.appendChild(this.iconElement);
+        this.iconElement.src = `./layers-icons/${slug}.png`;
+
+        this.componentsElement = document.createElement("div");
+        this.componentsElement.classList.add("layer-components");
+        layersComponentsElement.appendChild(this.componentsElement);
     }
     onIconElementClick = () => {
         this.select()
     }
     onIconElementLoad = () => {
-        loadedLayerIcons++;
-        if (imagesLoaded()) {
-            init();
-        }
+        loadedLayerIconImages++;
+        initIfImagesLoaded();
     }
     select = () => {
         layers.forEach((layer) => {
@@ -96,10 +113,33 @@ class Layer {
     }
 }
 
+class Component {
+    constructor(slug, layer, x, y) {
+        this.slug = slug;
+        this.layer = layer;
+        this.x = x;
+        this.y = y;
+
+        this.element = document.createElement("img");
+        this.element.classList.add("component");
+        this.element.addEventListener("load", this.onElementLoad);
+        this.element.src = `./components/${slug}.png`;
+        this.layer.componentsElement.appendChild(this.element);
+    }
+    onElementLoad = () => {
+        loadedComponentImages++;
+        initIfImagesLoaded();
+    }
+}
+
 layers.push(new Layer("layer1", 1));
 layers.push(new Layer("layer2", 1));
 layers.push(new Layer("layer3", 1));
 layers.push(new Layer("layer4", 1));
 layers.push(new Layer("layer5", 1));
 layers.push(new Layer("layer6", 1));
+
+components.push(new Component("component1", layers[0], 0, 0));
+components.push(new Component("component2", layers[0], 64, 40));
+
 layers[0].select();

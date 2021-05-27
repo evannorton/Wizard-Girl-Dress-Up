@@ -36,3 +36,7 @@ img {
 .layer-icon:hover, .layer-icon.selected {
     background-color: #151515;
 }
+
+.component {
+    cursor: pointer;
+}
