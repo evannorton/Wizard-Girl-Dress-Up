@@ -6,6 +6,8 @@ body {
     justify-content: center;
     overflow: hidden;
     width: 100vw;
+    user-select: none;
+    -moz-user-select: none;
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
@@ -33,7 +35,8 @@ img {
     transition: background-color .25s;
 }
 
-.layer-icon:hover, .layer-icon.selected {
+.layer-icon:hover,
+.layer-icon.selected {
     background-color: #151515;
 }
 
