@@ -70,9 +70,9 @@ class Layer {
     }
 }
 
-layers.push(new Layer("hair", 1));
-layers.push(new Layer("face", 1));
-layers.push(new Layer("top", 1));
-layers.push(new Layer("bottom", 1));
-layers.push(new Layer("footwear", 1));
-layers.push(new Layer("headwear", 1));
+layers.push(new Layer("layer1", 1));
+layers.push(new Layer("layer2", 1));
+layers.push(new Layer("layer3", 1));
+layers.push(new Layer("layer4", 1));
+layers.push(new Layer("layer5", 1));
+layers.push(new Layer("layer6", 1));
