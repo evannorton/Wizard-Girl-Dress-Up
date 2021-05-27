@@ -143,5 +143,7 @@ layers.push(new Layer("layer6", 1));
 
 components.push(new Component("component1", layers[0], 0, 0));
 components.push(new Component("component2", layers[0], 64, 40));
+components.push(new Component("component3", layers[1], 30, 30));
+components.push(new Component("component4", layers[2], 20, 20));
 
 layers[0].select();
