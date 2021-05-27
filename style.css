@@ -19,6 +19,10 @@ body {
     position: relative;
 }
 
+#game:not(.loaded) {
+    display: none;
+}
+
 img {
     position: absolute;
 }

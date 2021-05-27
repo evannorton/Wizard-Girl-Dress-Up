@@ -46,6 +46,7 @@ const onWindowResize = () => {
 };
 
 const init = () => {
+    gameElement.classList.add("loaded");
     setImageDimensions();
     sizeGame();
     addEventListener("resize", onWindowResize);
@@ -56,7 +57,7 @@ class Layer {
         this.slug = slug;
         this.zIndex = zIndex;
         const iconElement = document.createElement("img");
-        iconElement.className = "layer-icon";
+        iconElement.classList.add("layer-icon");
         iconElement.setAttribute("data-layer", slug);
         iconElement.onload = () => {
             loadedLayerIcons++;
