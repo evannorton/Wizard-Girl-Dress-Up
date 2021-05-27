@@ -37,6 +37,10 @@ img {
     background-color: #151515;
 }
 
+.layer-components:not(.selected) {
+    display: none;
+}
+
 .component {
     cursor: pointer;
 }

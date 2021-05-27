@@ -105,9 +105,11 @@ class Layer {
         layers.forEach((layer) => {
             if (layer.slug === this.slug) {
                 layer.iconElement.classList.add("selected");
+                layer.componentsElement.classList.add("selected");
             }
             else {
                 layer.iconElement.classList.remove("selected");
+                layer.componentsElement.classList.remove("selected");
             }
         });
     }
