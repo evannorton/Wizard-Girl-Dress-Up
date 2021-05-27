@@ -14,6 +14,10 @@ body {
     -ms-interpolation-mode: nearest-neighbor;
 }
 
+img {
+    position: absolute;
+}
+
 #game {
     background-color: #00177D;
     position: relative;
@@ -23,6 +27,12 @@ body {
     display: none;
 }
 
-img {
-    position: absolute;
+.layer-icon {
+    background-color: #343434;
+    cursor: pointer;
+    transition: background-color .25s;
+}
+
+.layer-icon:hover, .layer-icon.selected {
+    background-color: #151515;
 }

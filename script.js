@@ -36,7 +36,6 @@ const sizeGame = () => {
         const iconElement = document.querySelector(`.layer-icon[data-layer="${layer.slug}"]`);
         iconElement.style.top = `${offset}px`;
         const iconWidth = Number(iconElement.getAttribute("width"));
-        console.log(iconWidth);
         iconElement.style.right = `${offset + key * (iconWidth + Math.floor(.025 * width)) * scale}px`;
     });
 };
@@ -56,17 +55,32 @@ class Layer {
     constructor(slug, zIndex) {
         this.slug = slug;
         this.zIndex = zIndex;
-        const iconElement = document.createElement("img");
-        iconElement.classList.add("layer-icon");
-        iconElement.setAttribute("data-layer", slug);
-        iconElement.onload = () => {
-            loadedLayerIcons++;
-            if (imagesLoaded()) {
-                init();
+        this.iconElement = document.createElement("img");
+        this.iconElement.classList.add("layer-icon");
+        this.iconElement.setAttribute("data-layer", slug);
+        this.iconElement.addEventListener("click", this.onIconElementClick);
+        this.iconElement.addEventListener("load", this.onIconElementLoad);
+        this.iconElement.src = `./layer-icons/${slug}.png`;
+        layerIconsElement.appendChild(this.iconElement);
+    }
+    onIconElementClick = () => {
+        this.select()
+    }
+    onIconElementLoad = () => {
+        loadedLayerIcons++;
+        if (imagesLoaded()) {
+            init();
+        }
+    }
+    select = () => {
+        layers.forEach((layer) => {
+            if (layer.slug === this.slug) {
+                layer.iconElement.classList.add("selected");
             }
-        };
-        iconElement.src = `./layer-icons/${slug}.png`;
-        layerIconsElement.appendChild(iconElement);
+            else {
+                layer.iconElement.classList.remove("selected");
+            }
+        });
     }
 }
 
@@ -76,3 +90,4 @@ layers.push(new Layer("layer3", 1));
 layers.push(new Layer("layer4", 1));
 layers.push(new Layer("layer5", 1));
 layers.push(new Layer("layer6", 1));
+layers[0].select();
