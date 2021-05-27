@@ -1,10 +1,12 @@
-const width = 320;
-const height = 180;
-const aspect = width / height;
+const screenWidth = 320;
+const screenHeight = 180;
+const aspectRatio = screenWidth / screenHeight;
 
 const gameElement = document.getElementById("game");
 const baseElement = document.getElementById("base");
 const layerIconsElement = document.getElementById("layer-icons");
+
+let scale = 1;
 
 let loadedLayerIcons = 0;
 
@@ -14,6 +16,13 @@ const layerIconImagesLoaded = () => loadedLayerIcons === layers.length;
 
 const imagesLoaded = () => layerIconImagesLoaded();
 
+const getPX = (px) => `${px * scale}px`;
+const getElmWidth = (elm) => Number(elm.getAttribute("width"));
+const getElmWidthPX = (elm) => getPX(getElmWidth(elm));
+const getElmHeight = (elm) => Number(elm.getAttribute("height"));
+const getElmHeightPX = (elm) => getPX(getElmHeight(elm));
+const getSumOfNumbers = (numbers) => numbers.reduce((a, b) => a + b, 0);
+
 const setImageDimensions = () => {
     for (const elm of document.getElementsByTagName("img")) {
         elm.width = elm.width;
@@ -22,21 +31,24 @@ const setImageDimensions = () => {
 };
 
 const sizeGame = () => {
-    const scale = innerWidth / innerHeight > aspect ? innerHeight / height : innerWidth / width;
-    gameElement.style.width = `${width * scale}px`;
-    gameElement.style.height = `${height * scale}px`;
+    scale = innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
+    gameElement.style.width = getPX(screenWidth);
+    gameElement.style.height = getPX(screenHeight);
     for (const elm of document.getElementsByTagName("img")) {
-        elm.style.width = `${Number(elm.getAttribute("width")) * scale}px`;
-        elm.style.height = `${Number(elm.getAttribute("height")) * scale}px`;
+        elm.style.width = getElmWidthPX(elm);
+        elm.style.height = getElmHeightPX(elm);
     }
-    const offset = Math.floor((height - Number(baseElement.getAttribute("height"))) / 2) * scale;
-    baseElement.style.left = `${offset}px`;
-    baseElement.style.top = `${offset}px`;
-    [...layers].reverse().forEach((layer, key) => {
-        const iconElement = document.querySelector(`.layer-icon[data-layer="${layer.slug}"]`);
-        iconElement.style.top = `${offset}px`;
-        const iconWidth = Number(iconElement.getAttribute("width"));
-        iconElement.style.right = `${offset + key * (iconWidth + Math.floor(.025 * width)) * scale}px`;
+    const offset = Math.floor((screenHeight - getElmHeight(baseElement)) / 2);
+    baseElement.style.left = getPX(offset);
+    baseElement.style.top = getPX(offset);
+    const iconsWidth = getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * .025 * screenWidth;
+    const iconsRegionXStart = offset * 2 + getElmWidth(baseElement);
+    const iconsRegionXEnd = screenWidth - offset;
+    const iconsRegionWidth = iconsRegionXEnd - iconsRegionXStart;
+    const iconsXStart = iconsRegionXStart + Math.floor((iconsRegionWidth - iconsWidth) / 2);
+    layers.forEach((layer, key) => {
+        layer.iconElement.style.left = getPX(iconsXStart + key * (getElmWidth(layer.iconElement) + Math.floor(.025 * screenWidth)));
+        layer.iconElement.style.top = getPX(offset);
     });
 };
 
