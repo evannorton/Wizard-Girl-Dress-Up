@@ -1,5 +1,5 @@
-const screenWidth = 320;
-const screenHeight = 180;
+const screenWidth = 384;
+const screenHeight = 216;
 const aspectRatio = screenWidth / screenHeight;
 
 const gameElement = document.getElementById("game");
