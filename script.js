@@ -78,9 +78,8 @@ const initIfImagesLoaded = () => {
 };
 
 class Layer {
-    constructor(slug, zIndex) {
+    constructor(slug) {
         this.slug = slug;
-        this.zIndex = zIndex;
 
         this.iconElement = document.createElement("img");
         layersIconsElement.appendChild(this.iconElement);
@@ -134,12 +133,12 @@ class Component {
     }
 }
 
-layers.push(new Layer("layer1", 1));
-layers.push(new Layer("layer2", 1));
-layers.push(new Layer("layer3", 1));
-layers.push(new Layer("layer4", 1));
-layers.push(new Layer("layer5", 1));
-layers.push(new Layer("layer6", 1));
+layers.push(new Layer("layer1"));
+layers.push(new Layer("layer2"));
+layers.push(new Layer("layer3"));
+layers.push(new Layer("layer4"));
+layers.push(new Layer("layer5"));
+layers.push(new Layer("layer6"));
 
 components.push(new Component("component1", layers[0], 0, 0));
 components.push(new Component("component2", layers[0], 64, 40));
