@@ -135,12 +135,19 @@ class Component {
     }
 }
 
+const onWindowContextmenu = (e) => {
+    e.preventDefault();
+};
+
+addEventListener("contextmenu", onWindowContextmenu);
+
 const onBaseElementLoad = () => {
     loadedBaseImage = true;
     initIfImagesLoaded();
-}
+};
 
 baseElement.addEventListener("load", onBaseElementLoad);
+
 baseElement.src = process.env.CENSORED ? "./base-censored.png" : "./base.png";
 
 layers.push(new Layer("layer1"));
