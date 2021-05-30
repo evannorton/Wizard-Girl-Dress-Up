@@ -12,13 +12,15 @@ const components = [];
 
 let scale = 1;
 
+let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
 let loadedComponentImages = 0;
 
+const baseImageLoaded = () => baseImageLoaded;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === components.length;
 
-const imagesLoaded = () => layerIconImagesLoaded() && componentImagesLoaded();
+const imagesLoaded = () => baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded();
 
 const getPX = (px) => `${px * scale}px`;
 const getElmWidth = (elm) => Number(elm.getAttribute("width"));
@@ -133,6 +135,14 @@ class Component {
     }
 }
 
+const onBaseElementLoad = () => {
+    loadedBaseImage = true;
+    initIfImagesLoaded();
+}
+
+baseElement.addEventListener("load", onBaseElementLoad);
+baseElement.src = process.env.CENSORED ? "./base-censored.png" : "./base.png";
+
 layers.push(new Layer("layer1"));
 layers.push(new Layer("layer2"));
 layers.push(new Layer("layer3"));
@@ -140,9 +150,9 @@ layers.push(new Layer("layer4"));
 layers.push(new Layer("layer5"));
 layers.push(new Layer("layer6"));
 
-components.push(new Component("component1", layers[0], 0, 0));
-components.push(new Component("component2", layers[0], 64, 40));
-components.push(new Component("component3", layers[1], 30, 30));
-components.push(new Component("component4", layers[2], 20, 20));
+components.push(new Component("bra", layers[0], 0, 0));
+components.push(new Component("underwear", layers[0], 0, 48));
+components.push(new Component("dress", layers[1], 0, 0));
+components.push(new Component("hair", layers[2], 0, 0));
 
 layers[0].select();
