@@ -132,7 +132,7 @@ class ComponentPiece {
         this.component = component;
 
         this.element = document.createElement("img");
-        this.element.classList.add("component");
+        this.element.classList.add("component-piece");
         this.element.addEventListener("load", this.onElementLoad);
         this.element.src = `./component-images/${slug}.png`;
         this.component.layer.componentsElement.appendChild(this.element);
