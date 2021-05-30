@@ -135,10 +135,12 @@ class Component {
     }
 }
 
-const onWindowContextmenu = (e) => {
-    e.preventDefault();
-};
-addEventListener("contextmenu", onWindowContextmenu);
+if (process.env.DEBUG === false) {
+    const onWindowContextmenu = (e) => {
+        e.preventDefault();
+    };
+    addEventListener("contextmenu", onWindowContextmenu);
+}
 
 const onBaseElementLoad = () => {
     loadedBaseImage = true;
