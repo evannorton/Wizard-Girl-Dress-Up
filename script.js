@@ -9,6 +9,7 @@ const layersComponentsElement = document.getElementById("layers-components");
 
 const layers = [];
 const components = [];
+const componentPieces = [];
 
 let scale = 1;
 
@@ -16,7 +17,7 @@ let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
 let loadedComponentImages = 0;
 
-const baseImageLoaded = () => baseImageLoaded;
+const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === components.length;
 
@@ -52,9 +53,9 @@ const render = () => {
     });
     const componentsXStart = iconsXStart;
     const componentsYStart = Math.floor(offset + betweenIcons * 2.5);
-    components.forEach((component) => {
-        component.element.style.top = getPX(componentsYStart + component.y);
-        component.element.style.left = getPX(componentsXStart + component.x);
+    componentPieces.forEach((componentPiece) => {
+        componentPiece.element.style.top = getPX(componentsYStart + componentPiece.component.y);
+        componentPiece.element.style.left = getPX(componentsXStart + componentPiece.component.x);
     });
 };
 
@@ -122,12 +123,19 @@ class Component {
         this.layer = layer;
         this.x = x;
         this.y = y;
+    }
+}
+
+class ComponentPiece {
+    constructor(slug, component) {
+        this.slug = slug;
+        this.component = component;
 
         this.element = document.createElement("img");
         this.element.classList.add("component");
         this.element.addEventListener("load", this.onElementLoad);
-        this.element.src = `./components/${slug}.png`;
-        this.layer.componentsElement.appendChild(this.element);
+        this.element.src = `./component-images/${slug}.png`;
+        this.component.layer.componentsElement.appendChild(this.element);
     }
     onElementLoad = () => {
         loadedComponentImages++;
@@ -160,5 +168,11 @@ components.push(new Component("bra", layers[0], 0, 0));
 components.push(new Component("underwear", layers[0], 0, 48));
 components.push(new Component("dress", layers[1], 0, 0));
 components.push(new Component("hair", layers[2], 0, 0));
+
+componentPieces.push(new ComponentPiece("bra", components[0]));
+componentPieces.push(new ComponentPiece("underwear", components[1]));
+componentPieces.push(new ComponentPiece("dress", components[2]));
+componentPieces.push(new ComponentPiece("hair-front", components[3]));
+componentPieces.push(new ComponentPiece("hair-back", components[3]));
 
 layers[0].select();
