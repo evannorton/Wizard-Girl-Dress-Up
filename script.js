@@ -122,11 +122,13 @@ class Layer {
 }
 
 class Component {
-    constructor(slug, layer, x, y) {
+    constructor(slug, layer, x, y, snapX, snapY) {
         this.slug = slug;
         this.layer = layer;
         this.x = x;
         this.y = y;
+        this.snapX = snapX;
+        this.snapY = snapY;
 
         this.mousedownX = null;
         this.mousedownY = null;
@@ -154,6 +156,13 @@ class Component {
         }
     }
     onGameMouseup = () => {
+        const topDiff = Math.round((Number(this.element.style.top.replace("px", "")) - Number(baseElement.style.top.replace("px", ""))) / scale) - this.snapY;
+        const leftDiff = Math.round((Number(this.element.style.left.replace("px", "")) - Number(baseElement.style.left.replace("px", ""))) / scale) - this.snapX;
+        if (Math.abs(topDiff) < 32 && Math.abs(leftDiff) < 32) {
+            this.x -= leftDiff;
+            this.y -= topDiff;
+            render();
+        }
         gameElement.classList.remove("dragging");
         this.element.classList.remove("selected");
         game.removeEventListener("mousemove", this.onGameMousemove);
@@ -198,10 +207,10 @@ layers.push(new Layer("layer4"));
 layers.push(new Layer("layer5"));
 layers.push(new Layer("layer6"));
 
-components.push(new Component("bra", layers[0], 0, 0));
-components.push(new Component("underwear", layers[0], 0, 48));
-components.push(new Component("dress", layers[1], 0, 0));
-components.push(new Component("hair", layers[2], 0, 0));
+components.push(new Component("bra", layers[0], 0, 0, 27, 48));
+components.push(new Component("underwear", layers[0], 0, 48, 36, 97));
+components.push(new Component("dress", layers[1], 0, 0, 15, 46));
+components.push(new Component("hair", layers[2], 0, 0, 30, 0));
 
 componentPieces.push(new ComponentPiece("bra", components[0]));
 componentPieces.push(new ComponentPiece("underwear", components[1]));
