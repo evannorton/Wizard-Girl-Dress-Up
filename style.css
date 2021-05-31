@@ -1,6 +1,7 @@
 body {
     align-items: center;
     background-color: black;
+    cursor: url(./cursors/default.png), auto;
     display: flex;
     height: 100vh;
     justify-content: center;
@@ -31,7 +32,7 @@ img {
 
 .layer-icon {
     background-color: #343434;
-    cursor: pointer;
+    cursor: url(./cursors/pointer.png), auto;
     transition: background-color .25s;
 }
 
@@ -45,9 +46,6 @@ img {
 }
 
 .component {
+    cursor: url(./cursors/move.png), auto;
     position: absolute;
-}
-
-.component-piece {
-    cursor: move;
 }
