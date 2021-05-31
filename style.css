@@ -1,7 +1,6 @@
 body {
     align-items: center;
     background-color: black;
-    cursor: url(./cursors/default.png), auto;
     display: flex;
     height: 100vh;
     justify-content: center;
@@ -23,6 +22,7 @@ img {
 
 #game {
     background-color: #00177D;
+    cursor: url(./cursors/default.png), auto;
     position: relative;
 }
 
