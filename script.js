@@ -24,6 +24,7 @@ const componentImagesLoaded = () => loadedComponentImages === componentPieces.le
 const imagesLoaded = () => baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded();
 
 const getPX = (px) => `${px * scale}px`;
+const getPXAmount = (px) => Number(px.replace("px", ""));
 const getElmWidth = (elm) => Number(elm.getAttribute("width"));
 const getElmWidthPX = (elm) => getPX(getElmWidth(elm));
 const getElmHeight = (elm) => Number(elm.getAttribute("height"));
@@ -143,7 +144,7 @@ class Component {
         this.element = document.createElement("div");
         this.element.classList.add("component");
         this.element.addEventListener("mousedown", this.onElementMousedown);
-        game.addEventListener("mouseup", this.onGameMouseup);
+        addEventListener("mouseup", this.onWindowMouseup);
         this.layer.componentsElement.appendChild(this.element);
     }
     onElementMousedown = (e) => {
@@ -155,16 +156,24 @@ class Component {
     };
     onGameMousemove = (e) => {
         if (e.target === this.element) {
-            const diffX = (e.offsetX - this.mousedownX) / scale;
-            const diffY = (e.offsetY - this.mousedownY) / scale;
-            this.x += Math.floor(diffX);
-            this.y += Math.floor(diffY);
-            render();
+            const scaledDiffX = (e.offsetX - this.mousedownX);
+            const scaledDiffY = (e.offsetY - this.mousedownY);
+            const newX = scaledDiffX + getPXAmount(this.element.style.left);
+            const newY = scaledDiffY + getPXAmount(this.element.style.top);
+            if (newX > 0 && newY > 0 && newX + getPXAmount(this.element.style.width) < screenWidth * scale && newY + getPXAmount(this.element.style.height) < screenHeight * scale) {
+                const diffX = Math.round(scaledDiffX / scale);
+                const diffY = Math.round(scaledDiffY / scale);
+                this.x += diffX;
+                this.y += diffY;
+                render();
+            }
         }
     }
-    onGameMouseup = () => {
-        const topDiff = Math.round((Number(this.element.style.top.replace("px", "")) - Number(baseElement.style.top.replace("px", ""))) / scale) - this.snapY;
-        const leftDiff = Math.round((Number(this.element.style.left.replace("px", "")) - Number(baseElement.style.left.replace("px", ""))) / scale) - this.snapX;
+    getSnapTopDiff = () => Math.round((getPXAmount(this.element.style.top) - getPXAmount(baseElement.style.top)) / scale) - this.snapY;
+    getSnapBottomDiff = () => Math.round((getPXAmount(this.element.style.left) - getPXAmount(baseElement.style.left)) / scale) - this.snapX;
+    onWindowMouseup = () => {
+        const topDiff = this.getSnapTopDiff();
+        const leftDiff = this.getSnapBottomDiff();
         if (Math.abs(topDiff) < 32 && Math.abs(leftDiff) < 32) {
             this.snap();
         }
@@ -176,8 +185,8 @@ class Component {
         game.removeEventListener("mousemove", this.onGameMousemove);
     }
     snap = () => {
-        const topDiff = Math.round((Number(this.element.style.top.replace("px", "")) - Number(baseElement.style.top.replace("px", ""))) / scale) - this.snapY;
-        const leftDiff = Math.round((Number(this.element.style.left.replace("px", "")) - Number(baseElement.style.left.replace("px", ""))) / scale) - this.snapX;
+        const topDiff = this.getSnapTopDiff();
+        const leftDiff = this.getSnapBottomDiff();
         this.element.classList.add("snapped");
         this.x -= leftDiff;
         this.y -= topDiff;
