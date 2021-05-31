@@ -154,6 +154,7 @@ class Component {
         this.y = Math.round(gameY / getScale()) - getComponentsYStart() - Math.round(this.getHeight() * (this.mousedownY / 100));
         this.mousedownX = e.offsetX / getPXAmount(this.element.style.width) * 100;
         this.mousedownY = e.offsetY / getPXAmount(this.element.style.height) * 100;
+        this.layer.select();
         game.addEventListener("mousemove", this.onGameMousemove);
     };
     onGameMousemove = (e) => {
