@@ -19,7 +19,7 @@ let loadedComponentImages = 0;
 
 const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
-const componentImagesLoaded = () => loadedComponentImages === components.length;
+const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
 
 const imagesLoaded = () => baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded();
 
