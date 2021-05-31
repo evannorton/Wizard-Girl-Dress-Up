@@ -128,14 +128,36 @@ class Component {
         this.x = x;
         this.y = y;
 
+        this.mousedownX = null;
+        this.mousedownY = null;
+
         this.element = document.createElement("div");
         this.element.classList.add("component");
         this.element.addEventListener("mousedown", this.onElementMousedown);
+        game.addEventListener("mouseup", this.onGameMouseup);
         this.layer.componentsElement.appendChild(this.element);
     }
-    onElementMousedown = () => {
-        // TODO handle click
+    onElementMousedown = (e) => {
+        gameElement.classList.add("dragging");
+        this.element.classList.add("selected");
+        this.mousedownX = e.offsetX;
+        this.mousedownY = e.offsetY;
+        game.addEventListener("mousemove", this.onGameMousemove);
     };
+    onGameMousemove = (e) => {
+        if (e.target === this.element) {
+            const diffX = (e.offsetX - this.mousedownX) / scale;
+            const diffY = (e.offsetY - this.mousedownY) / scale;
+            this.x += Math.floor(diffX);
+            this.y += Math.floor(diffY);
+            render();
+        }
+    }
+    onGameMouseup = () => {
+        gameElement.classList.remove("dragging");
+        this.element.classList.remove("selected");
+        game.removeEventListener("mousemove", this.onGameMousemove);
+    }
 }
 
 class ComponentPiece {

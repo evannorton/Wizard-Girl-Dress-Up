@@ -49,3 +49,11 @@ img {
     cursor: url(./cursors/move.png), auto;
     position: absolute;
 }
+
+#game.dragging .component:not(.selected) {
+    pointer-events: none;
+}
+
+.component-piece {
+    pointer-events: none;
+}
