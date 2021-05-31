@@ -122,13 +122,16 @@ class Layer {
 }
 
 class Component {
-    constructor(slug, layer, x, y, snapX, snapY) {
+    constructor(slug, layer, startX, startY, snapX, snapY) {
         this.slug = slug;
         this.layer = layer;
-        this.x = x;
-        this.y = y;
+        this.startX = startX;
+        this.startY = startY;
         this.snapX = snapX;
         this.snapY = snapY;
+
+        this.x = this.startX;
+        this.y = this.startY;
 
         this.mousedownX = null;
         this.mousedownY = null;
@@ -162,11 +165,15 @@ class Component {
             this.element.classList.add("snapped");
             this.x -= leftDiff;
             this.y -= topDiff;
-            render();
         }
         else {
             this.element.classList.remove("snapped");
+            if (this.layer.componentsElement.classList.contains("selected") === false) {
+                this.x = this.startX;
+                this.y = this.startY;
+            }
         }
+        render();
         gameElement.classList.remove("dragging");
         this.element.classList.remove("selected");
         game.removeEventListener("mousemove", this.onGameMousemove);
