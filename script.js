@@ -203,12 +203,13 @@ class Component {
 }
 
 class ComponentPiece {
-    constructor(slug, component) {
+    constructor(slug, component, zIndex) {
         this.slug = slug;
         this.component = component;
 
         this.element = document.createElement("img");
         this.element.classList.add("component-piece");
+        this.element.style.zIndex = zIndex;
         this.element.addEventListener("load", this.onElementLoad);
         this.element.src = `./component-images/${slug}.png`;
         this.component.element.appendChild(this.element);
@@ -245,10 +246,10 @@ components.push(new Component("underwear", layers[0], 0, 48, 36, 97));
 components.push(new Component("dress", layers[1], 0, 0, 15, 46));
 components.push(new Component("hair", layers[2], 0, 0, 30, 0));
 
-componentPieces.push(new ComponentPiece("bra", components[0]));
-componentPieces.push(new ComponentPiece("underwear", components[1]));
-componentPieces.push(new ComponentPiece("dress", components[2]));
-componentPieces.push(new ComponentPiece("hair-front", components[3]));
-componentPieces.push(new ComponentPiece("hair-back", components[3]));
+componentPieces.push(new ComponentPiece("bra", components[0], 2));
+componentPieces.push(new ComponentPiece("underwear", components[1], 2));
+componentPieces.push(new ComponentPiece("dress", components[2], 2));
+componentPieces.push(new ComponentPiece("hair-front", components[3], 3));
+componentPieces.push(new ComponentPiece("hair-back", components[3], 1));
 
 layers[0].select();
