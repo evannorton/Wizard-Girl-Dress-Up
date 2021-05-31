@@ -11,8 +11,6 @@ const layers = [];
 const components = [];
 const componentPieces = [];
 
-let scale = 1;
-
 let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
 let loadedComponentImages = 0;
@@ -23,42 +21,42 @@ const componentImagesLoaded = () => loadedComponentImages === componentPieces.le
 
 const imagesLoaded = () => baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded();
 
-const getPX = (px) => `${px * scale}px`;
+const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
+const getPX = (px) => `${px * getScale()}px`;
 const getPXAmount = (px) => Number(px.replace("px", ""));
 const getElmWidth = (elm) => Number(elm.getAttribute("width"));
 const getElmWidthPX = (elm) => getPX(getElmWidth(elm));
 const getElmHeight = (elm) => Number(elm.getAttribute("height"));
 const getElmHeightPX = (elm) => getPX(getElmHeight(elm));
 const getSumOfNumbers = (numbers) => numbers.reduce((a, b) => a + b, 0);
+const getOffset = () => Math.floor((screenHeight - getElmHeight(baseElement)) / 2);
+const getIconsRegionXStart = () => getOffset() * 2 + getElmWidth(baseElement);
+const getIconsRegionXEnd = () => screenWidth - getOffset();
+const getIconsRegionWidth = () => getIconsRegionXEnd() - getIconsRegionXStart();
+const getBetweenIcons = () => Math.floor(.025 * screenWidth);
+const getIconsWidth = () => getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * getBetweenIcons();
+const getIconsXStart = () => getIconsRegionXStart() + Math.floor((getIconsRegionWidth() - getIconsWidth()) / 2);
+const getComponentsXStart = () => getIconsXStart();
+const getComponentsYStart = () => Math.floor(getOffset() + getBetweenIcons() * 2.5);
 
 const render = () => {
-    scale = innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
     gameElement.style.width = getPX(screenWidth);
     gameElement.style.height = getPX(screenHeight);
     for (const elm of document.getElementsByTagName("img")) {
         elm.style.width = getElmWidthPX(elm);
         elm.style.height = getElmHeightPX(elm);
     }
-    const offset = Math.floor((screenHeight - getElmHeight(baseElement)) / 2);
-    baseElement.style.left = getPX(offset);
-    baseElement.style.top = getPX(offset);
-    const betweenIcons = Math.floor(.025 * screenWidth);
-    const iconsWidth = getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * betweenIcons;
-    const iconsRegionXStart = offset * 2 + getElmWidth(baseElement);
-    const iconsRegionXEnd = screenWidth - offset;
-    const iconsRegionWidth = iconsRegionXEnd - iconsRegionXStart;
-    const iconsXStart = iconsRegionXStart + Math.floor((iconsRegionWidth - iconsWidth) / 2);
+    baseElement.style.left = getPX(getOffset());
+    baseElement.style.top = getPX(getOffset());
     layers.forEach((layer, key) => {
-        layer.iconElement.style.left = getPX(iconsXStart + key * (getElmWidth(layer.iconElement) + betweenIcons));
-        layer.iconElement.style.top = getPX(offset);
+        layer.iconElement.style.left = getPX(getIconsXStart() + key * (getElmWidth(layer.iconElement) + getBetweenIcons()));
+        layer.iconElement.style.top = getPX(getOffset());
     });
-    const componentsXStart = iconsXStart;
-    const componentsYStart = Math.floor(offset + betweenIcons * 2.5);
     componentPieces.forEach((componentPiece) => {
         componentPiece.element.style.top = getPX(0);
         componentPiece.element.style.left = getPX(0);
-        componentPiece.component.element.style.top = getPX(componentsYStart + componentPiece.component.y);
-        componentPiece.component.element.style.left = getPX(componentsXStart + componentPiece.component.x);
+        componentPiece.component.element.style.top = getPX(getComponentsYStart() + componentPiece.component.y);
+        componentPiece.component.element.style.left = getPX(getComponentsXStart() + componentPiece.component.x);
         componentPiece.component.element.style.width = componentPiece.element.style.width;
         componentPiece.component.element.style.height = componentPiece.element.style.height;
     });
@@ -150,27 +148,29 @@ class Component {
     onElementMousedown = (e) => {
         gameElement.classList.add("dragging");
         this.element.classList.add("selected");
-        this.mousedownX = e.offsetX;
-        this.mousedownY = e.offsetY;
+        const gameX = e.clientX - gameElement.offsetLeft;
+        const gameY = e.clientY - gameElement.offsetTop;
+        this.x = Math.round(gameX / getScale()) - getComponentsXStart() - Math.round(this.getWidth() * (this.mousedownX / 100));
+        this.y = Math.round(gameY / getScale()) - getComponentsYStart() - Math.round(this.getHeight() * (this.mousedownY / 100));
+        this.mousedownX = e.offsetX / getPXAmount(this.element.style.width) * 100;
+        this.mousedownY = e.offsetY / getPXAmount(this.element.style.height) * 100;
         game.addEventListener("mousemove", this.onGameMousemove);
     };
     onGameMousemove = (e) => {
-        if (e.target === this.element) {
-            const scaledDiffX = (e.offsetX - this.mousedownX);
-            const scaledDiffY = (e.offsetY - this.mousedownY);
-            const newX = scaledDiffX + getPXAmount(this.element.style.left);
-            const newY = scaledDiffY + getPXAmount(this.element.style.top);
-            if (newX > 0 && newY > 0 && newX + getPXAmount(this.element.style.width) < screenWidth * scale && newY + getPXAmount(this.element.style.height) < screenHeight * scale) {
-                const diffX = Math.round(scaledDiffX / scale);
-                const diffY = Math.round(scaledDiffY / scale);
-                this.x += diffX;
-                this.y += diffY;
-                render();
-            }
+        const gameX = e.clientX - gameElement.offsetLeft;
+        const gameY = e.clientY - gameElement.offsetTop;
+        const newX = Math.round(gameX / getScale()) - getComponentsXStart() - Math.round(this.getWidth() * (this.mousedownX / 100));
+        const newY = Math.round(gameY / getScale()) - getComponentsYStart() - Math.round(this.getHeight() * (this.mousedownY / 100));
+        if (newX + getComponentsXStart() >= 0 && newY + getComponentsYStart() >= 0 && newX + getComponentsXStart() + this.getWidth() <= screenWidth && newY + getComponentsYStart() + this.getHeight() <= screenHeight) {
+            this.x = newX;
+            this.y = newY;
+            render();
         }
     }
-    getSnapTopDiff = () => Math.round((getPXAmount(this.element.style.top) - getPXAmount(baseElement.style.top)) / scale) - this.snapY;
-    getSnapBottomDiff = () => Math.round((getPXAmount(this.element.style.left) - getPXAmount(baseElement.style.left)) / scale) - this.snapX;
+    getWidth = () => Math.round(getPXAmount(this.element.style.width) / getScale());
+    getHeight = () => Math.round(getPXAmount(this.element.style.height) / getScale());
+    getSnapTopDiff = () => Math.round((getPXAmount(this.element.style.top) - getPXAmount(baseElement.style.top)) / getScale()) - this.snapY;
+    getSnapBottomDiff = () => Math.round((getPXAmount(this.element.style.left) - getPXAmount(baseElement.style.left)) / getScale()) - this.snapX;
     onWindowMouseup = () => {
         const topDiff = this.getSnapTopDiff();
         const leftDiff = this.getSnapBottomDiff();
