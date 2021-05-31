@@ -54,8 +54,12 @@ const render = () => {
     const componentsXStart = iconsXStart;
     const componentsYStart = Math.floor(offset + betweenIcons * 2.5);
     componentPieces.forEach((componentPiece) => {
-        componentPiece.element.style.top = getPX(componentsYStart + componentPiece.component.y);
-        componentPiece.element.style.left = getPX(componentsXStart + componentPiece.component.x);
+        componentPiece.element.style.top = getPX(0);
+        componentPiece.element.style.left = getPX(0);
+        componentPiece.component.element.style.top = getPX(componentsYStart + componentPiece.component.y);
+        componentPiece.component.element.style.left = getPX(componentsXStart + componentPiece.component.x);
+        componentPiece.component.element.style.width = componentPiece.element.style.width;
+        componentPiece.component.element.style.height = componentPiece.element.style.height;
     });
 };
 
@@ -123,7 +127,15 @@ class Component {
         this.layer = layer;
         this.x = x;
         this.y = y;
+
+        this.element = document.createElement("div");
+        this.element.classList.add("component");
+        this.element.addEventListener("mousedown", this.onElementMousedown);
+        this.layer.componentsElement.appendChild(this.element);
     }
+    onElementMousedown = () => {
+        // TODO handle click
+    };
 }
 
 class ComponentPiece {
@@ -135,7 +147,7 @@ class ComponentPiece {
         this.element.classList.add("component-piece");
         this.element.addEventListener("load", this.onElementLoad);
         this.element.src = `./component-images/${slug}.png`;
-        this.component.layer.componentsElement.appendChild(this.element);
+        this.component.element.appendChild(this.element);
     }
     onElementLoad = () => {
         loadedComponentImages++;

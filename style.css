@@ -44,6 +44,10 @@ img {
     display: none;
 }
 
+.component {
+    position: absolute;
+}
+
 .component-piece {
     cursor: move;
 }
