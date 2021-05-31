@@ -75,6 +75,10 @@ const init = () => {
         elm.ondragstart = () => false;
     }
     render();
+    components[0].snap();
+    components[1].snap();
+    components[2].snap();
+    components[3].snap();
     addEventListener("resize", onWindowResize);
 };
 
@@ -162,21 +166,30 @@ class Component {
         const topDiff = Math.round((Number(this.element.style.top.replace("px", "")) - Number(baseElement.style.top.replace("px", ""))) / scale) - this.snapY;
         const leftDiff = Math.round((Number(this.element.style.left.replace("px", "")) - Number(baseElement.style.left.replace("px", ""))) / scale) - this.snapX;
         if (Math.abs(topDiff) < 32 && Math.abs(leftDiff) < 32) {
-            this.element.classList.add("snapped");
-            this.x -= leftDiff;
-            this.y -= topDiff;
+            this.snap();
         }
         else {
-            this.element.classList.remove("snapped");
-            if (this.layer.componentsElement.classList.contains("selected") === false) {
-                this.x = this.startX;
-                this.y = this.startY;
-            }
+            this.unsnap();
         }
-        render();
         gameElement.classList.remove("dragging");
         this.element.classList.remove("selected");
         game.removeEventListener("mousemove", this.onGameMousemove);
+    }
+    snap = () => {
+        const topDiff = Math.round((Number(this.element.style.top.replace("px", "")) - Number(baseElement.style.top.replace("px", ""))) / scale) - this.snapY;
+        const leftDiff = Math.round((Number(this.element.style.left.replace("px", "")) - Number(baseElement.style.left.replace("px", ""))) / scale) - this.snapX;
+        this.element.classList.add("snapped");
+        this.x -= leftDiff;
+        this.y -= topDiff;
+        render();
+    }
+    unsnap = () => {
+        this.element.classList.remove("snapped");
+        if (this.layer.componentsElement.classList.contains("selected") === false) {
+            this.x = this.startX;
+            this.y = this.startY;
+        }
+        render();
     }
 }
 
