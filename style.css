@@ -30,6 +30,10 @@ img {
     display: none;
 }
 
+#game.dragging .component:not(.selected), #game.dragging .layer-icon, .component-piece {
+    pointer-events: none;
+}
+
 .layer-icon {
     background-color: #343434;
     cursor: url(./cursors/pointer.png), auto;
@@ -49,12 +53,4 @@ img {
 .component {
     cursor: url(./cursors/move.png), auto;
     position: absolute;
-}
-
-#game.dragging .component:not(.selected) {
-    pointer-events: none;
-}
-
-.component-piece {
-    pointer-events: none;
 }
