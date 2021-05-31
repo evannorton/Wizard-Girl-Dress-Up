@@ -41,7 +41,7 @@ img {
     background-color: #151515;
 }
 
-.layer-components:not(.selected) {
+.layer-components:not(.selected) .component:not(.snapped) {
     display: none;
 }
 
