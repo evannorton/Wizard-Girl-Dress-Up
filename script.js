@@ -48,8 +48,8 @@ const render = () => {
         elm.style.width = getElmWidthPX(elm);
         elm.style.height = getElmHeightPX(elm);
     }
-    baseElement.style.left = getPX(33);
-    baseElement.style.top = getPX(45);
+    baseElement.style.left = getPX(getOffset() + 3);
+    baseElement.style.top = getPX(getOffset() + 15);
     componentsBGElement.style.left = getPX(getIconsRegionXStart() - getComponentsBGPadding());
     componentsBGElement.style.top = getPX(getOffset() - getComponentsBGPadding());
     componentsBGElement.style.height = getPX(screenHeight - getOffset() * 2 + getComponentsBGPadding() * 2);
