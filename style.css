@@ -16,12 +16,15 @@ body {
     -ms-interpolation-mode: nearest-neighbor;
 }
 
-img {
+img,
+.component,
+#components-bg {
     position: absolute;
 }
 
 #game {
-    background-color: #00177D;
+    background-image: url(./bg.png);
+    background-size: cover;
     cursor: url(./cursors/default.png), auto;
     position: relative;
 }
@@ -30,12 +33,17 @@ img {
     display: none;
 }
 
-#game.dragging .component:not(.selected), #game.dragging .layer-icon, .component-piece {
+#game.dragging .component:not(.selected),
+#game.dragging .layer-icon,
+.component-piece {
     pointer-events: none;
 }
 
+#components-bg {
+    background-color: rgba(0, 0, 0, .75);
+}
+
 .layer-icon {
-    background-color: #343434;
     cursor: url(./cursors/pointer.png), auto;
     transition: background-color .25s;
     z-index: 100;
@@ -52,5 +60,4 @@ img {
 
 .component {
     cursor: url(./cursors/move.png), auto;
-    position: absolute;
 }

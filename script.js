@@ -4,6 +4,7 @@ const aspectRatio = screenWidth / screenHeight;
 
 const gameElement = document.getElementById("game");
 const baseElement = document.getElementById("base");
+const componentsBGElement = document.getElementById("components-bg");
 const layersIconsElement = document.getElementById("layers-icons");
 const layersComponentsElement = document.getElementById("layers-components");
 
@@ -30,10 +31,11 @@ const getElmHeight = (elm) => Number(elm.getAttribute("height"));
 const getElmHeightPX = (elm) => getPX(getElmHeight(elm));
 const getSumOfNumbers = (numbers) => numbers.reduce((a, b) => a + b, 0);
 const getOffset = () => Math.floor((screenHeight - getElmHeight(baseElement)) / 2);
+const getComponentsBGPadding = () => Math.floor(screenWidth / 48);
 const getIconsRegionXStart = () => getOffset() * 2 + getElmWidth(baseElement);
 const getIconsRegionXEnd = () => screenWidth - getOffset();
 const getIconsRegionWidth = () => getIconsRegionXEnd() - getIconsRegionXStart();
-const getBetweenIcons = () => Math.floor(.025 * screenWidth);
+const getBetweenIcons = () => Math.floor(.035 * screenWidth);
 const getIconsWidth = () => getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * getBetweenIcons();
 const getIconsXStart = () => getIconsRegionXStart() + Math.floor((getIconsRegionWidth() - getIconsWidth()) / 2);
 const getComponentsXStart = () => getIconsXStart();
@@ -46,8 +48,12 @@ const render = () => {
         elm.style.width = getElmWidthPX(elm);
         elm.style.height = getElmHeightPX(elm);
     }
-    baseElement.style.left = getPX(getOffset());
-    baseElement.style.top = getPX(getOffset());
+    baseElement.style.left = getPX(33);
+    baseElement.style.top = getPX(45);
+    componentsBGElement.style.left = getPX(getIconsRegionXStart() - getComponentsBGPadding());
+    componentsBGElement.style.top = getPX(getOffset() - getComponentsBGPadding());
+    componentsBGElement.style.height = getPX(screenHeight - getOffset() * 2 + getComponentsBGPadding() * 2);
+    componentsBGElement.style.width = getPX(getIconsRegionWidth() + getComponentsBGPadding() * 2);
     layers.forEach((layer, key) => {
         layer.iconElement.style.left = getPX(getIconsXStart() + key * (getElmWidth(layer.iconElement) + getBetweenIcons()));
         layer.iconElement.style.top = getPX(getOffset());
