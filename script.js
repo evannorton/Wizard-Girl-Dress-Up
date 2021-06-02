@@ -15,6 +15,8 @@ const components = [];
 const componentPieces = [];
 const backgrounds = [];
 
+const heldKeys = [];
+
 let loadedRoomImage = false;
 let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
@@ -95,13 +97,22 @@ const onWindowResize = () => {
 };
 
 const onWindowKeydown = (e) => {
-    switch (e.key) {
-        case "ArrowLeft":
-            selectRelativeBackground(-1);
-            break;
-        case "ArrowRight":
-            selectRelativeBackground(1);
-            break;
+    if (heldKeys.includes(e.key) === false) {
+        switch (e.key) {
+            case "ArrowLeft":
+                selectRelativeBackground(-1);
+                break;
+            case "ArrowRight":
+                selectRelativeBackground(1);
+                break;
+        }
+        heldKeys.push(e.key);
+    }
+};
+
+const onWindowKeyup = (e) => {
+    if (heldKeys.includes(e.key)) {
+        heldKeys.splice(heldKeys.indexOf(e.key), 1);
     }
 };
 
@@ -119,6 +130,7 @@ const init = () => {
     components[3].snap();
     addEventListener("resize", onWindowResize);
     addEventListener("keydown", onWindowKeydown);
+    addEventListener("keyup", onWindowKeyup);
 };
 
 const initIfImagesLoaded = () => {
