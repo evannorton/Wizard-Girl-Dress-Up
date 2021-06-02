@@ -21,7 +21,6 @@ let loadedRoomImage = false;
 let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
 let loadedComponentImages = 0;
-let loadedBackgroundCloudsImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
 
@@ -29,11 +28,10 @@ const roomImageLoaded = () => loadedRoomImage;
 const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
-const backgroundCloudsImages = () => loadedBackgroundCloudsImages === backgrounds.length;
 const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
 const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
 
-const imagesLoaded = () => roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded() && backgroundCloudsImages() && backgroundSkyImages() && backgroundTreeImages();
+const imagesLoaded = () => roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
 
 const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
 const getPX = (px) => `${px * getScale()}px`;
@@ -90,6 +88,9 @@ const render = () => {
         componentPiece.component.element.style.width = componentPiece.element.style.width;
         componentPiece.component.element.style.height = componentPiece.element.style.height;
     });
+    backgrounds.forEach((background) => {
+        background.cloudsElement.style.backgroundPosition = getPX(background.cloudsPosition);
+    });
 };
 
 const onWindowResize = () => {
@@ -131,6 +132,12 @@ const init = () => {
     addEventListener("resize", onWindowResize);
     addEventListener("keydown", onWindowKeydown);
     addEventListener("keyup", onWindowKeyup);
+    setInterval(() => {
+        backgrounds.forEach((background) => {
+            background.moveClouds();
+        });
+        render();
+    }, 1000);
 };
 
 const initIfImagesLoaded = () => {
@@ -276,6 +283,8 @@ class Background {
     constructor(slug) {
         this.slug = slug;
 
+        this.cloudsPosition = 0;
+
         this.containerElement = document.createElement("div");
         this.containerElement.classList.add("background");
         backgroundsElement.appendChild(this.containerElement);
@@ -285,19 +294,15 @@ class Background {
         this.skyElement.addEventListener("load", this.onSkyElementLoad);
         this.skyElement.src = `./skies/${slug}.png`;
 
-        this.cloudsElement = document.createElement("img");
+        this.cloudsElement = document.createElement("div");
+        this.cloudsElement.classList.add("clouds");
         this.containerElement.appendChild(this.cloudsElement);
-        this.cloudsElement.addEventListener("load", this.onCloudsElementLoad);
-        this.cloudsElement.src = `./clouds/${slug}.png`;
+        this.cloudsElement.style.backgroundImage = `url(./clouds/${slug}.png)`;
 
         this.treesElement = document.createElement("img");
         this.containerElement.appendChild(this.treesElement);
         this.treesElement.addEventListener("load", this.onTreesElementLoad);
         this.treesElement.src = `./trees/${slug}.png`;
-    }
-    onCloudsElementLoad = () => {
-        loadedBackgroundCloudsImages++;
-        initIfImagesLoaded();
     }
     onSkyElementLoad = () => {
         loadedBackgroundSkyImages++;
@@ -316,6 +321,14 @@ class Background {
                 background.containerElement.classList.remove("selected");
             }
         });
+    }
+    moveClouds = () => {
+        if (this.cloudsPosition === 0) {
+            this.cloudsPosition = screenWidth - 1;
+        }
+        else {
+            this.cloudsPosition--;
+        }
     }
 }
 

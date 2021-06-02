@@ -17,6 +17,7 @@ body {
 }
 
 img,
+.clouds,
 .component,
 #components-bg {
     position: absolute;
@@ -39,6 +40,12 @@ img,
 
 .background:not(.selected) {
     display: none;
+}
+
+.clouds {
+    background-size: contain;
+    height: 100%;
+    width: 100%;
 }
 
 #components-bg {
