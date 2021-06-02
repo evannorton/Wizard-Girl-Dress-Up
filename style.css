@@ -23,8 +23,6 @@ img,
 }
 
 #game {
-    background-image: url(./bg.png);
-    background-size: cover;
     cursor: url(./cursors/default.png), auto;
     position: relative;
 }
@@ -37,6 +35,10 @@ img,
 #game.dragging .layer-icon,
 .component-piece {
     pointer-events: none;
+}
+
+.background:not(.selected) {
+    display: none;
 }
 
 #components-bg {

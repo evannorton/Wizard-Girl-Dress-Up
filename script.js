@@ -3,6 +3,8 @@ const screenHeight = 216;
 const aspectRatio = screenWidth / screenHeight;
 
 const gameElement = document.getElementById("game");
+const backgroundsElement = document.getElementById("backgrounds");
+const roomElement = document.getElementById("room");
 const baseElement = document.getElementById("base");
 const componentsBGElement = document.getElementById("components-bg");
 const layersIconsElement = document.getElementById("layers-icons");
@@ -11,16 +13,25 @@ const layersComponentsElement = document.getElementById("layers-components");
 const layers = [];
 const components = [];
 const componentPieces = [];
+const backgrounds = [];
 
+let loadedRoomImage = false;
 let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
 let loadedComponentImages = 0;
+let loadedBackgroundCloudsImages = 0;
+let loadedBackgroundSkyImages = 0;
+let loadedBackgroundTreeImages = 0;
 
+const roomImageLoaded = () => loadedRoomImage;
 const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
+const backgroundCloudsImages = () => loadedBackgroundCloudsImages === backgrounds.length;
+const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
+const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
 
-const imagesLoaded = () => baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded();
+const imagesLoaded = () => roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded() && backgroundCloudsImages() && backgroundSkyImages() && backgroundTreeImages();
 
 const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
 const getPX = (px) => `${px * getScale()}px`;
@@ -40,6 +51,17 @@ const getIconsWidth = () => getSumOfNumbers(layers.map((layer) => getElmWidth(la
 const getIconsXStart = () => getIconsRegionXStart() + Math.floor((getIconsRegionWidth() - getIconsWidth()) / 2);
 const getComponentsXStart = () => getIconsXStart();
 const getComponentsYStart = () => Math.floor(getOffset() + getBetweenIcons() * 2.5);
+
+const selectRelativeBackground = (position) => {
+    const selectedIndex = backgrounds.findIndex((background) => background.containerElement.classList.contains("selected"));
+    const sum = selectedIndex + position;
+    const newIndex = sum < 0
+        ? sum + backgrounds.length
+        : sum >= backgrounds.length
+            ? sum - backgrounds.length
+            : sum;
+    backgrounds[newIndex].select();
+};
 
 const render = () => {
     gameElement.style.width = getPX(screenWidth);
@@ -72,6 +94,17 @@ const onWindowResize = () => {
     render();
 };
 
+const onWindowKeydown = (e) => {
+    switch (e.key) {
+        case "ArrowLeft":
+            selectRelativeBackground(-1);
+            break;
+        case "ArrowRight":
+            selectRelativeBackground(1);
+            break;
+    }
+};
+
 const init = () => {
     gameElement.classList.add("loaded");
     for (const elm of document.getElementsByTagName("img")) {
@@ -85,6 +118,7 @@ const init = () => {
     components[2].snap();
     components[3].snap();
     addEventListener("resize", onWindowResize);
+    addEventListener("keydown", onWindowKeydown);
 };
 
 const initIfImagesLoaded = () => {
@@ -100,7 +134,6 @@ class Layer {
         this.iconElement = document.createElement("img");
         layersIconsElement.appendChild(this.iconElement);
         this.iconElement.classList.add("layer-icon");
-        this.iconElement.setAttribute("data-layer", slug);
         this.iconElement.addEventListener("click", this.onIconElementClick);
         this.iconElement.addEventListener("load", this.onIconElementLoad);
         this.iconElement.src = `./layers-icons/${slug}.png`;
@@ -227,12 +260,66 @@ class ComponentPiece {
     }
 }
 
+class Background {
+    constructor(slug) {
+        this.slug = slug;
+
+        this.containerElement = document.createElement("div");
+        this.containerElement.classList.add("background");
+        backgroundsElement.appendChild(this.containerElement);
+
+        this.skyElement = document.createElement("img");
+        this.containerElement.appendChild(this.skyElement);
+        this.skyElement.addEventListener("load", this.onSkyElementLoad);
+        this.skyElement.src = `./skies/${slug}.png`;
+
+        this.cloudsElement = document.createElement("img");
+        this.containerElement.appendChild(this.cloudsElement);
+        this.cloudsElement.addEventListener("load", this.onCloudsElementLoad);
+        this.cloudsElement.src = `./clouds/${slug}.png`;
+
+        this.treesElement = document.createElement("img");
+        this.containerElement.appendChild(this.treesElement);
+        this.treesElement.addEventListener("load", this.onTreesElementLoad);
+        this.treesElement.src = `./trees/${slug}.png`;
+    }
+    onCloudsElementLoad = () => {
+        loadedBackgroundCloudsImages++;
+        initIfImagesLoaded();
+    }
+    onSkyElementLoad = () => {
+        loadedBackgroundSkyImages++;
+        initIfImagesLoaded();
+    }
+    onTreesElementLoad = () => {
+        loadedBackgroundTreeImages++;
+        initIfImagesLoaded();
+    }
+    select = () => {
+        backgrounds.forEach((background) => {
+            if (background.slug === this.slug) {
+                background.containerElement.classList.add("selected");
+            }
+            else {
+                background.containerElement.classList.remove("selected");
+            }
+        });
+    }
+}
+
 if (process.env.DEBUG === false) {
     const onWindowContextmenu = (e) => {
         e.preventDefault();
     };
     addEventListener("contextmenu", onWindowContextmenu);
 }
+
+const onRoomElementLoad = () => {
+    loadedRoomImage = true;
+    initIfImagesLoaded();
+};
+roomElement.addEventListener("load", onRoomElementLoad);
+roomElement.src = "./room.png";
 
 const onBaseElementLoad = () => {
     loadedBaseImage = true;
@@ -259,4 +346,9 @@ componentPieces.push(new ComponentPiece("dress", components[2], 2));
 componentPieces.push(new ComponentPiece("hair-front", components[3], 3));
 componentPieces.push(new ComponentPiece("hair-back", components[3], 1));
 
+backgrounds.push(new Background("day"));
+backgrounds.push(new Background("night"));
+backgrounds.push(new Background("blompton"));
+
 layers[0].select();
+backgrounds[0].select();
