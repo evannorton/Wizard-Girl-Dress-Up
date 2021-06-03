@@ -393,7 +393,7 @@ componentPieces.push(new ComponentPiece("long-hair", components[7], 5));
 componentPieces.push(new ComponentPiece("short-hair", components[8], 5));
 componentPieces.push(new ComponentPiece("socks", components[9], 3));
 componentPieces.push(new ComponentPiece("garder", components[10], 3));
-componentPieces.push(new ComponentPiece("sunglasses", components[11], 7));
+componentPieces.push(new ComponentPiece("sunglasses", components[11], 8));
 
 backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
