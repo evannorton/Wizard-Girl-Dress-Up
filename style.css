@@ -75,3 +75,7 @@ img,
 .component {
     cursor: url(./cursors/move.png), auto;
 }
+
+.component.selected {
+    z-index: 100;
+}
