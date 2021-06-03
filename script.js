@@ -49,8 +49,8 @@ const getIconsRegionWidth = () => getIconsRegionXEnd() - getIconsRegionXStart();
 const getBetweenIcons = () => Math.floor(.035 * screenWidth);
 const getIconsWidth = () => getSumOfNumbers(layers.map((layer) => getElmWidth(layer.iconElement))) + (layers.length - 1) * getBetweenIcons();
 const getIconsXStart = () => getIconsRegionXStart() + Math.floor((getIconsRegionWidth() - getIconsWidth()) / 2);
-const getComponentsXStart = () => getIconsXStart();
-const getComponentsYStart = () => Math.floor(getOffset() + getBetweenIcons() * 2.5);
+const getComponentsXStart = () => getIconsXStart() - screenWidth / 24;
+const getComponentsYStart = () => Math.floor(getOffset() + Math.floor(getBetweenIcons() * 1.875));
 
 const selectRelativeBackground = (position) => {
     const selectedIndex = backgrounds.findIndex((background) => background.containerElement.classList.contains("selected"));
@@ -125,10 +125,13 @@ const init = () => {
         elm.ondragstart = () => false;
     }
     render();
+    layers[0].select();
+    backgrounds[0].select();
     components[0].snap();
     components[1].snap();
     components[2].snap();
-    components[3].snap();
+    components[6].snap();
+    components[9].snap();
     addEventListener("resize", onWindowResize);
     addEventListener("keydown", onWindowKeydown);
     addEventListener("keyup", onWindowKeyup);
@@ -360,20 +363,38 @@ layers.push(new Layer("layer4"));
 layers.push(new Layer("layer5"));
 layers.push(new Layer("layer6"));
 
-components.push(new Component("bra", layers[0], 0, 0, 27, 48));
-components.push(new Component("underwear", layers[0], 0, 48, 36, 97));
-components.push(new Component("dress", layers[1], 0, 0, 15, 46));
-components.push(new Component("hair", layers[2], 0, 0, 30, 0));
+components.push(new Component("bra", layers[0], 32, 16, 27, 47));
+components.push(new Component("underwear", layers[0], 32, 64, 36, 97));
+components.push(new Component("pads", layers[1], 0, 0, 15, 46));
+components.push(new Component("no-pads", layers[1], 80, 0, 15, 47));
+components.push(new Component("sleeves", layers[1], 32, 48, 15, 47));
+components.push(new Component("maid", layers[1], 112, 38, 14, 40));
+components.push(new Component("hat", layers[2], 0, 0, 7, -33));
+components.push(new Component("long-hair", layers[2], 96, 0, 30, 0));
+components.push(new Component("short-hair", layers[2], 152, 0, 30, 0));
+components.push(new Component("socks", layers[3], 32, 16, 0, 115));
+components.push(new Component("garder", layers[3], 32, 64, 0, 110));
+components.push(new Component("sunglasses", layers[5], 32, 16, 34, 25));
 
-componentPieces.push(new ComponentPiece("bra", components[0], 2));
-componentPieces.push(new ComponentPiece("underwear", components[1], 2));
-componentPieces.push(new ComponentPiece("dress", components[2], 2));
-componentPieces.push(new ComponentPiece("hair-front", components[3], 3));
-componentPieces.push(new ComponentPiece("hair-back", components[3], 1));
+componentPieces.push(new ComponentPiece("bra-front", components[0], 6));
+componentPieces.push(new ComponentPiece("bra-back", components[0], 1));
+componentPieces.push(new ComponentPiece("underwear-front", components[1], 6));
+componentPieces.push(new ComponentPiece("underwear-back", components[1], 1));
+componentPieces.push(new ComponentPiece("pads-front", components[2], 6));
+componentPieces.push(new ComponentPiece("pads-back", components[2], 1));
+componentPieces.push(new ComponentPiece("no-pads-front", components[3], 6));
+componentPieces.push(new ComponentPiece("no-pads-back", components[3], 1));
+componentPieces.push(new ComponentPiece("sleeves-front", components[4], 6));
+componentPieces.push(new ComponentPiece("sleeves-back", components[4], 1));
+componentPieces.push(new ComponentPiece("maid-front", components[5], 6));
+componentPieces.push(new ComponentPiece("maid-back", components[5], 1));
+componentPieces.push(new ComponentPiece("hat", components[6], 5));
+componentPieces.push(new ComponentPiece("long-hair", components[7], 5));
+componentPieces.push(new ComponentPiece("short-hair", components[8], 5));
+componentPieces.push(new ComponentPiece("socks", components[9], 3));
+componentPieces.push(new ComponentPiece("garder", components[10], 3));
+componentPieces.push(new ComponentPiece("sunglasses", components[11], 7));
 
 backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
-
-layers[0].select();
-backgrounds[0].select();
