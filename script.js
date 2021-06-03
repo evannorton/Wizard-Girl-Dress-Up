@@ -137,7 +137,7 @@ const init = () => {
             background.moveClouds();
         });
         render();
-    }, 1000);
+    }, 500);
 };
 
 const initIfImagesLoaded = () => {
