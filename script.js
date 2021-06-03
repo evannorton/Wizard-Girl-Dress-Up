@@ -252,6 +252,7 @@ class Component {
         this.element.classList.add("snapped");
         this.x -= leftDiff;
         this.y -= topDiff;
+        this.element.style.zIndex = null;
         render();
     }
     unsnap = () => {
@@ -260,6 +261,13 @@ class Component {
             this.x = this.startX;
             this.y = this.startY;
         }
+        const indices = [];
+        componentPieces.forEach((componentPiece) => {
+            if (componentPiece.component.slug === this.slug) {
+                indices.push(componentPiece.zIndex);
+            }
+        });
+        this.element.style.zIndex = Math.max(...indices);
         render();
     }
 }
@@ -268,6 +276,7 @@ class ComponentPiece {
     constructor(slug, component, zIndex) {
         this.slug = slug;
         this.component = component;
+        this.zIndex = zIndex;
 
         this.element = document.createElement("img");
         this.element.classList.add("component-piece");
