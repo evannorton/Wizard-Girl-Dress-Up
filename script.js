@@ -202,7 +202,6 @@ class Component {
 
         this.element = document.createElement("div");
         this.element.classList.add("component");
-        this.element.addEventListener("mousedown", this.onElementMousedown);
         addEventListener("mouseup", this.onWindowMouseup);
         this.layer.componentsElement.appendChild(this.element);
     }
@@ -281,6 +280,7 @@ class ComponentPiece {
         this.element = document.createElement("img");
         this.element.classList.add("component-piece");
         this.element.style.zIndex = zIndex;
+        this.element.addEventListener("mousedown", this.component.onElementMousedown);
         this.element.addEventListener("load", this.onElementLoad);
         this.element.src = `./component-images/${slug}.png`;
         this.component.element.appendChild(this.element);

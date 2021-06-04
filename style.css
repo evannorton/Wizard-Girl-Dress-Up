@@ -32,9 +32,8 @@ img,
     display: none;
 }
 
-#game.dragging .component:not(.selected),
-#game.dragging .layer-icon,
-.component-piece {
+#game.dragging .component:not(.selected) .component-piece,
+#game.dragging .layer-icon {
     pointer-events: none;
 }
 
