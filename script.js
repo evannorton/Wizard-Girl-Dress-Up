@@ -10,6 +10,9 @@ const componentsBGElement = document.getElementById("components-bg");
 const layersIconsElement = document.getElementById("layers-icons");
 const layersComponentsElement = document.getElementById("layers-components");
 
+const music = new Audio("./music.mp3");
+music.loop = true;
+
 const layers = [];
 const components = [];
 const componentPieces = [];
@@ -97,7 +100,16 @@ const onWindowResize = () => {
     render();
 };
 
+const onWindowClick = () => {
+    if (music.paused) {
+        music.play();
+    }
+};
+
 const onWindowKeydown = (e) => {
+    if (music.paused) {
+        music.play();
+    }
     if (heldKeys.includes(e.key) === false) {
         switch (e.key) {
             case "ArrowLeft":
@@ -105,6 +117,10 @@ const onWindowKeydown = (e) => {
                 break;
             case "ArrowRight":
                 selectRelativeBackground(1);
+                break;
+            case "M":
+            case "m":
+                music.volume = music.volume === 1 ? 0 : 1;
                 break;
         }
         heldKeys.push(e.key);
@@ -133,6 +149,7 @@ const init = () => {
     components[6].snap();
     components[9].snap();
     addEventListener("resize", onWindowResize);
+    addEventListener("click", onWindowClick);
     addEventListener("keydown", onWindowKeydown);
     addEventListener("keyup", onWindowKeyup);
     setInterval(() => {
