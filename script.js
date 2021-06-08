@@ -120,7 +120,7 @@ const onWindowKeydown = (e) => {
                 break;
             case "M":
             case "m":
-                music.volume = music.volume === 1 ? 0 : 1;
+                music.muted = music.muted === false;
                 break;
         }
         heldKeys.push(e.key);
