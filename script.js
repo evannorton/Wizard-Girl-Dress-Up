@@ -406,6 +406,12 @@ components.push(new Component("school-socks", layers[1], 96, 40, 0, 120));
 components.push(new Component("garter", layers[1], -4, 32, 0, 110));
 components.push(new Component("short-socks", layers[1], 96, 16, 0, 120));
 components.push(new Component("wizard-socks", layers[1], -4, 8, 0, 115));
+components.push(new Component("flipflops", layers[2], 92, 108, -1, 118));
+components.push(new Component("rollerskates", layers[2], -4, 88, 0, 116));
+components.push(new Component("converses", layers[2], 94, 68, 0, 118));
+components.push(new Component("boots", layers[2], -4, 48, 0, 116));
+components.push(new Component("heels", layers[2], 96, 28, 0, 118));
+components.push(new Component("school-shoes", layers[2], -4, 8, 0, 116));
 
 componentPieces.push(new ComponentPiece("spats-back", components[0], 1));
 componentPieces.push(new ComponentPiece("spats-front", components[0], 5));
@@ -437,6 +443,12 @@ componentPieces.push(new ComponentPiece("school-socks", components[16], 6));
 componentPieces.push(new ComponentPiece("garter", components[17], 6));
 componentPieces.push(new ComponentPiece("short-socks", components[18], 6));
 componentPieces.push(new ComponentPiece("wizard-socks", components[19], 6));
+componentPieces.push(new ComponentPiece("flipflops", components[20], 7));
+componentPieces.push(new ComponentPiece("rollerskates", components[21], 7));
+componentPieces.push(new ComponentPiece("converses", components[22], 7));
+componentPieces.push(new ComponentPiece("boots", components[23], 7));
+componentPieces.push(new ComponentPiece("heels", components[24], 7));
+componentPieces.push(new ComponentPiece("school-shoes", components[25], 7));
 
 backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
