@@ -147,6 +147,7 @@ const init = () => {
     components[16].snap();
     components[17].snap();
     components[20].snap();
+    components[43].snap();
     addEventListener("resize", onWindowResize);
     addEventListener("click", onWindowClick);
     addEventListener("keydown", onWindowKeydown);
