@@ -498,8 +498,10 @@ componentPieces.push(new ComponentPiece("wizard-hat-back", components[39], 4));
 componentPieces.push(new ComponentPiece("wizard-hat-front", components[39], 9));
 componentPieces.push(new ComponentPiece("short-hair-back", components[40], 4));
 componentPieces.push(new ComponentPiece("short-hair-front", components[40], 9));
-componentPieces.push(new ComponentPiece("gf-hair", components[41], 4));
-componentPieces.push(new ComponentPiece("ponytail", components[42], 4));
+componentPieces.push(new ComponentPiece("gf-hair-back", components[41], 4));
+componentPieces.push(new ComponentPiece("gf-hair-front", components[41], 9));
+componentPieces.push(new ComponentPiece("ponytail-back", components[42], 4));
+componentPieces.push(new ComponentPiece("ponytail-front", components[42], 9));
 componentPieces.push(new ComponentPiece("cowboy-hat", components[43], 9));
 
 backgrounds.push(new Background("day"));
