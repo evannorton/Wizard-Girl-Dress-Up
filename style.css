@@ -19,6 +19,7 @@ body {
 img,
 .clouds,
 .component,
+.component-inner,
 #components-bg {
     position: absolute;
 }
@@ -79,9 +80,17 @@ img,
 }
 
 .component {
-    cursor: url(./cursors/move.png), auto;
+    pointer-events: none;
 }
 
 .component.selected {
     z-index: 100 !important;
+}
+
+.component-inner {
+    cursor: url(./cursors/move.png), auto;
+    height: 100%;
+    pointer-events: all;
+    width: 100%;
+    z-index: 100;
 }
