@@ -58,13 +58,20 @@ img,
 
 .layer-icon {
     cursor: url(./cursors/pointer.png), auto;
-    transition: background-color .25s;
     z-index: 100;
 }
 
-.layer-icon:hover,
 .layer-icon.selected {
-    background-color: #151515;
+    display: none;
+}
+
+.layer-selected-icon {
+    cursor: url(./cursors/pointer.png), auto;
+    z-index: 100;
+}
+
+.layer-selected-icon:not(.selected) {
+    display: none;
 }
 
 .layer-components:not(.selected) .component:not(.snapped) {

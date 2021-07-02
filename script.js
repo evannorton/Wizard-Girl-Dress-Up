@@ -23,6 +23,7 @@ const heldKeys = [];
 let loadedRoomImage = false;
 let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
+let loadedLayerSelectedIconImages = 0;
 let loadedComponentImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
@@ -30,11 +31,12 @@ let loadedBackgroundTreeImages = 0;
 const roomImageLoaded = () => loadedRoomImage;
 const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
+const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
 const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
 const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
 
-const imagesLoaded = () => roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
+const imagesLoaded = () => roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
 
 const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
 const getPX = (px) => `${px * getScale()}px`;
@@ -82,6 +84,8 @@ const render = () => {
     layers.forEach((layer, key) => {
         layer.iconElement.style.left = getPX(getIconsXStart() + key * (getElmWidth(layer.iconElement) + getBetweenIcons()));
         layer.iconElement.style.top = getPX(getOffset());
+        layer.selectedIconElement.style.left = getPX(getIconsXStart() + key * (getElmWidth(layer.selectedIconElement) + getBetweenIcons()));
+        layer.selectedIconElement.style.top = getPX(getOffset());
     });
     componentPieces.forEach((componentPiece) => {
         componentPiece.element.style.top = getPX(0);
@@ -177,25 +181,41 @@ class Layer {
         this.iconElement.addEventListener("load", this.onIconElementLoad);
         this.iconElement.src = `./layers-icons/${slug}.png`;
 
+        this.selectedIconElement = document.createElement("img");
+        layersIconsElement.appendChild(this.selectedIconElement);
+        this.selectedIconElement.classList.add("layer-selected-icon");
+        this.selectedIconElement.addEventListener("click", this.onSelectedIconElementClick);
+        this.selectedIconElement.addEventListener("load", this.onSelectedIconElementLoad);
+        this.selectedIconElement.src = `./layers-icons/${slug}-selected.png`;
+
         this.componentsElement = document.createElement("div");
         this.componentsElement.classList.add("layer-components");
         layersComponentsElement.appendChild(this.componentsElement);
     }
     onIconElementClick = () => {
-        this.select()
+        this.select();
     }
     onIconElementLoad = () => {
         loadedLayerIconImages++;
+        initIfImagesLoaded();
+    }
+    onSelectedIconElementClick = () => {
+        this.select();
+    }
+    onSelectedIconElementLoad = () => {
+        loadedLayerSelectedIconImages++;
         initIfImagesLoaded();
     }
     select = () => {
         layers.forEach((layer) => {
             if (layer.slug === this.slug) {
                 layer.iconElement.classList.add("selected");
+                layer.selectedIconElement.classList.add("selected");
                 layer.componentsElement.classList.add("selected");
             }
             else {
                 layer.iconElement.classList.remove("selected");
+                layer.selectedIconElement.classList.remove("selected");
                 layer.componentsElement.classList.remove("selected");
             }
         });
