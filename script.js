@@ -268,7 +268,7 @@ class Component {
         const gameY = e.clientY - gameElement.offsetTop;
         const newX = Math.round(gameX / getScale()) - getComponentsXStart() - Math.round(this.getWidth() * (this.mousedownX / 100));
         const newY = Math.round(gameY / getScale()) - getComponentsYStart() - Math.round(this.getHeight() * (this.mousedownY / 100));
-        if (newX + getComponentsXStart() >= this.clickX && newY + getComponentsYStart() >= this.clickY && newX + getComponentsXStart() + this.getWidth() - this.clickX <= screenWidth && newY + getComponentsYStart() + this.getHeight() <= screenHeight) {
+        if (newX + getComponentsXStart() >= this.clickX && newY + getComponentsYStart() >= this.clickY && newX + getComponentsXStart() + this.getWidth() - this.clickX <= screenWidth && newY + getComponentsYStart() + this.getHeight() - this.clickY <= screenHeight) {
             this.x = newX - this.clickX;
             this.y = newY - this.clickY;
             render();
