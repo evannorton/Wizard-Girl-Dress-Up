@@ -245,10 +245,6 @@ class Component {
     onElementMousedown = (e) => {
         gameElement.classList.add("dragging");
         this.element.classList.add("selected");
-        const gameX = e.clientX - gameElement.offsetLeft;
-        const gameY = e.clientY - gameElement.offsetTop;
-        this.x = Math.round(gameX / getScale()) - getComponentsXStart() - Math.round(this.getWidth() * (this.mousedownX / 100));
-        this.y = Math.round(gameY / getScale()) - getComponentsYStart() - Math.round(this.getHeight() * (this.mousedownY / 100));
         this.mousedownX = e.offsetX / getPXAmount(this.element.style.width) * 100;
         this.mousedownY = e.offsetY / getPXAmount(this.element.style.height) * 100;
         this.layer.select();
