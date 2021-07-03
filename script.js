@@ -2,7 +2,13 @@ const screenWidth = 384;
 const screenHeight = 216;
 const aspectRatio = screenWidth / screenHeight;
 
+const retrommoFirst = Math.random() >= .5;
+
 const gameElement = document.getElementById("game");
+const logoElement = document.getElementById("logo");
+const creditsElement = document.getElementById("credits");
+const retrommoLinkElement = document.getElementById("retrommo-link");
+const thlurpLinkElement = document.getElementById("thlurp-link");
 const backgroundsElement = document.getElementById("backgrounds");
 const roomElement = document.getElementById("room");
 const baseElement = document.getElementById("base");
@@ -20,6 +26,8 @@ const backgrounds = [];
 
 const heldKeys = [];
 
+let loadedLogoImage = false;
+let loadedCreditsImage = false;
 let loadedRoomImage = false;
 let loadedBaseImage = false;
 let loadedLayerIconImages = 0;
@@ -28,6 +36,8 @@ let loadedComponentImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
 
+const logoImageLoaded = () => loadedLogoImage;
+const creditsImageLoaded = () => loadedCreditsImage;
 const roomImageLoaded = () => loadedRoomImage;
 const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
@@ -36,7 +46,7 @@ const componentImagesLoaded = () => loadedComponentImages === componentPieces.le
 const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
 const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
 
-const imagesLoaded = () => roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
+const imagesLoaded = () => logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
 
 const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
 const getPX = (px) => `${px * getScale()}px`;
@@ -75,6 +85,22 @@ const render = () => {
         elm.style.width = getElmWidthPX(elm);
         elm.style.height = getElmHeightPX(elm);
     }
+    logoElement.style.left = getPX(192);
+    logoElement.style.top = getPX(26);
+    creditsElement.style.left = getPX(175);
+    creditsElement.style.top = getPX(130);
+    const firstLinkElement = retrommoFirst ? retrommoLinkElement : thlurpLinkElement;
+    const secondLinkElement = retrommoFirst ? thlurpLinkElement : retrommoLinkElement;
+    const firstLinkWidth = retrommoFirst ? 48 : 29;
+    const secondLinkWidth = retrommoFirst ? 29 : 48;
+    firstLinkElement.style.top = getPX(130);
+    firstLinkElement.style.left = getPX(235);
+    firstLinkElement.style.width = getPX(firstLinkWidth);
+    firstLinkElement.style.height = getPX(12);
+    secondLinkElement.style.top = getPX(130);
+    secondLinkElement.style.left = retrommoFirst ? getPX(309) : getPX(290);
+    secondLinkElement.style.width = getPX(secondLinkWidth);
+    secondLinkElement.style.height = getPX(12);
     baseElement.style.left = getPX(getOffset() + 3);
     baseElement.style.top = getPX(getOffset() + 15);
     componentsBGElement.style.left = getPX(getIconsRegionXStart() - getComponentsBGPadding());
@@ -395,6 +421,20 @@ if (process.env.DEBUG === false) {
     };
     addEventListener("contextmenu", onWindowContextmenu);
 }
+
+const onLogoElementLoad = () => {
+    loadedLogoImage = true;
+    initIfImagesLoaded();
+};
+logoElement.addEventListener("load", onLogoElementLoad);
+logoElement.src = "./logo.png";
+
+const onCreditsElementLoad = () => {
+    loadedCreditsImage = true;
+    initIfImagesLoaded();
+};
+creditsElement.addEventListener("load", onCreditsElementLoad);
+creditsElement.src = retrommoFirst ? "./credits1.png" : "./credits2.png";
 
 const onRoomElementLoad = () => {
     loadedRoomImage = true;

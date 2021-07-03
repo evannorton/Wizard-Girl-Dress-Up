@@ -17,6 +17,7 @@ body {
 }
 
 img,
+.link,
 .clouds,
 .component,
 .component-inner,
@@ -33,9 +34,25 @@ img,
     display: none;
 }
 
+#game:not(.dress-up) #components-bg {
+    display: none;
+}
+
+#game:not(.dress-up) #layers-icons, #game:not(.dress-up) .component:not(.snapped) {
+    display: none;
+}
+
+#game:not(.dress-up) .component-inner {
+    pointer-events: none;
+}
+
 #game.dragging .component:not(.selected) .component-piece,
 #game.dragging .layer-icon {
     pointer-events: none;
+}
+
+.link {
+    cursor: url(./cursors/pointer.png), auto;
 }
 
 .background:not(.selected) {
