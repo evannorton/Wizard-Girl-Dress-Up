@@ -138,7 +138,3 @@ img,
     cursor: url(./cursors/pointer.png), auto;
     position: absolute;
 }
-
-#game.title #room-code-clickbox {
-    display: none;
-}
