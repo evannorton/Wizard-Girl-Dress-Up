@@ -17,6 +17,7 @@ body {
 }
 
 img,
+.button,
 .link,
 .clouds,
 .component,
@@ -34,11 +35,28 @@ img,
     display: none;
 }
 
+.button {
+    cursor: url(./cursors/pointer.png), auto;
+}
+
+.button.pressed .unpressed-button {
+    display: none;
+}
+
+.button:not(.pressed) .pressed-button {
+    display: none;
+}
+
+#game:not(.title) #title {
+    display: none;
+}
+
 #game:not(.dress-up) #components-bg {
     display: none;
 }
 
-#game:not(.dress-up) #layers-icons, #game:not(.dress-up) .component:not(.snapped) {
+#game:not(.dress-up) #layers-icons,
+#game:not(.dress-up) .component:not(.snapped) {
     display: none;
 }
 

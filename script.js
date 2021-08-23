@@ -5,6 +5,7 @@ const aspectRatio = screenWidth / screenHeight;
 const retrommoFirst = Math.random() >= .5;
 
 const gameElement = document.getElementById("game");
+const buttonsElement = document.getElementById("buttons");
 const logoElement = document.getElementById("logo");
 const creditsElement = document.getElementById("credits");
 const retrommoLinkElement = document.getElementById("retrommo-link");
@@ -19,6 +20,7 @@ const layersComponentsElement = document.getElementById("layers-components");
 const music = new Audio("./music.mp3");
 music.loop = true;
 
+const buttons = [];
 const layers = [];
 const components = [];
 const componentPieces = [];
@@ -30,12 +32,14 @@ let loadedLogoImage = false;
 let loadedCreditsImage = false;
 let loadedRoomImage = false;
 let loadedBaseImage = false;
+let loadedButtonImages = 0;
 let loadedLayerIconImages = 0;
 let loadedLayerSelectedIconImages = 0;
 let loadedComponentImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
 
+const buttonImagesLoaded = () => loadedButtonImages === buttons.length * 2;
 const logoImageLoaded = () => loadedLogoImage;
 const creditsImageLoaded = () => loadedCreditsImage;
 const roomImageLoaded = () => loadedRoomImage;
@@ -46,7 +50,7 @@ const componentImagesLoaded = () => loadedComponentImages === componentPieces.le
 const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
 const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
 
-const imagesLoaded = () => logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
 
 const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
 const getPX = (px) => `${px * getScale()}px`;
@@ -101,6 +105,17 @@ const render = () => {
     secondLinkElement.style.left = retrommoFirst ? getPX(309) : getPX(290);
     secondLinkElement.style.width = getPX(secondLinkWidth);
     secondLinkElement.style.height = getPX(12);
+    buttons.forEach((button, key) => {
+        button.element.style.display = button.condition() ? "block" : "none";
+        button.unpressedElement.style.top = getPX(0);
+        button.unpressedElement.style.left = getPX(0);
+        button.pressedElement.style.top = getPX(0);
+        button.pressedElement.style.left = getPX(0);
+        button.element.style.top = getPX(button.y);
+        button.element.style.left = getPX(button.x);
+        button.element.style.width = button.unpressedElement.style.width;
+        button.element.style.height = button.pressedElement.style.height;
+    });
     baseElement.style.left = getPX(getOffset() + 3);
     baseElement.style.top = getPX(getOffset() + 15);
     componentsBGElement.style.left = getPX(getIconsRegionXStart() - getComponentsBGPadding());
@@ -199,6 +214,49 @@ const initIfImagesLoaded = () => {
         init();
     }
 };
+
+class Button {
+    constructor(slug, x, y, condition, onPress) {
+        this.slug = slug;
+        this.x = x;
+        this.y = y;
+        this.condition = condition;
+        this.onPress = onPress;
+
+        this.element = document.createElement("div");
+        this.element.classList.add("button");
+
+        this.unpressedElement = document.createElement("img");
+        this.unpressedElement.classList.add("unpressed-button");
+        this.unpressedElement.addEventListener("load", this.onImageElementLoad);
+        this.unpressedElement.src = `./buttons/${slug}.png`;
+
+        this.pressedElement = document.createElement("img");
+        this.pressedElement.classList.add("pressed-button");
+        this.pressedElement.addEventListener("load", this.onImageElementLoad);
+        this.pressedElement.src = `./buttons/${slug}-pressed.png`;
+
+        this.element.appendChild(this.unpressedElement);
+        this.element.appendChild(this.pressedElement);
+        buttonsElement.appendChild(this.element);
+
+        this.element.addEventListener("mousedown", this.onElementMousedown)
+        addEventListener("mouseup", this.onWindowMouseup)
+    }
+    onImageElementLoad = () => {
+        loadedButtonImages++;
+        initIfImagesLoaded();
+    }
+    onElementMousedown = () => {
+        this.element.classList.add("pressed");
+    }
+    onWindowMouseup = () => {
+        if (this.element.classList.contains("pressed") && this.condition()) {
+            this.onPress();
+            this.element.classList.remove("pressed");
+        }
+    }
+}
 
 class Layer {
     constructor(slug) {
@@ -449,6 +507,12 @@ const onBaseElementLoad = () => {
 };
 baseElement.addEventListener("load", onBaseElementLoad);
 baseElement.src = process.env.CENSORED ? "./base-censored.png" : "./base.png";
+
+buttons.push(new Button("play", 192, 147, () => gameElement.classList.contains("title"), () => {
+    gameElement.classList.remove("title");
+    gameElement.classList.add("dress-up");
+}));
+buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), () => { console.log("test2"); }));
 
 layers.push(new Layer("hair"));
 layers.push(new Layer("underwear"));
