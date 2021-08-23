@@ -129,3 +129,16 @@ img,
     width: 100%;
     z-index: 100;
 }
+
+#room-code:not(.revealed) {
+    display: none;
+}
+
+#room-code-clickbox {
+    cursor: url(./cursors/pointer.png), auto;
+    position: absolute;
+}
+
+#game.title #room-code-clickbox {
+    display: none;
+}

@@ -12,6 +12,8 @@ const retrommoLinkElement = document.getElementById("retrommo-link");
 const thlurpLinkElement = document.getElementById("thlurp-link");
 const backgroundsElement = document.getElementById("backgrounds");
 const roomElement = document.getElementById("room");
+const roomCodeElement = document.getElementById("room-code");
+const roomCodeClickboxElement = document.getElementById("room-code-clickbox");
 const baseElement = document.getElementById("base");
 const componentsBGElement = document.getElementById("components-bg");
 const layersIconsElement = document.getElementById("layers-icons");
@@ -31,6 +33,7 @@ const heldKeys = [];
 let loadedLogoImage = false;
 let loadedCreditsImage = false;
 let loadedRoomImage = false;
+let loadedRoomCodeImage = false;
 let loadedBaseImage = false;
 let loadedButtonImages = 0;
 let loadedLayerIconImages = 0;
@@ -43,6 +46,7 @@ const buttonImagesLoaded = () => loadedButtonImages === buttons.length * 2;
 const logoImageLoaded = () => loadedLogoImage;
 const creditsImageLoaded = () => loadedCreditsImage;
 const roomImageLoaded = () => loadedRoomImage;
+const roomCodeImageLoaded = () => loadedRoomCodeImage;
 const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
@@ -50,7 +54,7 @@ const componentImagesLoaded = () => loadedComponentImages === componentPieces.le
 const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
 const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
 
 const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
 const getPX = (px) => `${px * getScale()}px`;
@@ -116,6 +120,10 @@ const render = () => {
         button.element.style.width = button.unpressedElement.style.width;
         button.element.style.height = button.pressedElement.style.height;
     });
+    roomCodeClickboxElement.style.left = getPX(362);
+    roomCodeClickboxElement.style.top = getPX(173);
+    roomCodeClickboxElement.style.width = getPX(18);
+    roomCodeClickboxElement.style.height = getPX(15);
     baseElement.style.left = getPX(getOffset() + 3);
     baseElement.style.top = getPX(getOffset() + 15);
     componentsBGElement.style.left = getPX(getIconsRegionXStart() - getComponentsBGPadding());
@@ -201,6 +209,11 @@ const init = () => {
     addEventListener("click", onWindowClick);
     addEventListener("keydown", onWindowKeydown);
     addEventListener("keyup", onWindowKeyup);
+    const onRoomCodeClickboxElementClick = () => {
+        roomCodeElement.classList.add("revealed");
+        roomCodeClickboxElement.remove();
+    };
+    roomCodeClickboxElement.addEventListener("click", onRoomCodeClickboxElementClick);
     setInterval(() => {
         backgrounds.forEach((background) => {
             background.moveClouds();
@@ -517,6 +530,13 @@ const onRoomElementLoad = () => {
 };
 roomElement.addEventListener("load", onRoomElementLoad);
 roomElement.src = "./room.png";
+
+const onRoomCodeElementLoad = () => {
+    loadedRoomCodeImage = true;
+    initIfImagesLoaded();
+};
+roomCodeElement.addEventListener("load", onRoomCodeElementLoad);
+roomCodeElement.src = "./room-code.png";
 
 const onBaseElementLoad = () => {
     loadedBaseImage = true;
