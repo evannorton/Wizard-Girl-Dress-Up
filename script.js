@@ -382,7 +382,25 @@ class Component {
         this.x -= leftDiff;
         this.y -= topDiff;
         this.element.style.zIndex = null;
+        if (Number(this.innerElement.style.zIndex) - 100 > 0) {
+            this.innerElement.style.zIndex = Number(this.innerElement.style.zIndex) - 100;
+        }
+        componentPieces.forEach((componentPiece) => {
+            if (componentPiece.component.slug === this.slug) {
+                componentPiece.element.style.zIndex = componentPiece.zIndex;
+            }
+        });
         render();
+    }
+    updateZIndices = () => {
+        const indices = [];
+        componentPieces.forEach((componentPiece) => {
+            if (componentPiece.component.slug === this.slug) {
+                indices.push(componentPiece.zIndex);
+            }
+        });
+        this.element.style.zIndex = Math.max(...indices) + 100;
+        this.innerElement.style.zIndex = Math.max(...indices) + 100;
     }
     unsnap = () => {
         this.element.classList.remove("snapped");
@@ -390,13 +408,12 @@ class Component {
             this.x = this.startX;
             this.y = this.startY;
         }
-        const indices = [];
+        this.updateZIndices();
         componentPieces.forEach((componentPiece) => {
             if (componentPiece.component.slug === this.slug) {
-                indices.push(componentPiece.zIndex);
+                componentPiece.element.zIndex = componentPiece.zIndex + 100;
             }
         });
-        this.element.style.zIndex = Math.max(...indices);
         render();
     }
 }
@@ -409,7 +426,7 @@ class ComponentPiece {
 
         this.element = document.createElement("img");
         this.element.classList.add("component-piece");
-        this.element.style.zIndex = zIndex;
+        this.element.style.zIndex = zIndex + 100;
         this.element.addEventListener("load", this.onElementLoad);
         this.element.src = `./component-images/${slug}.png`;
         this.component.element.appendChild(this.element);
@@ -639,3 +656,5 @@ componentPieces.push(new ComponentPiece("wizard-socks", components[43], 6));
 backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
+
+components.forEach((component) => { component.updateZIndices(); });

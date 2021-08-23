@@ -119,7 +119,7 @@ img,
 }
 
 .component.selected {
-    z-index: 100 !important;
+    z-index: 1000 !important;
 }
 
 .component-inner {
