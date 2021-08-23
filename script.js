@@ -560,7 +560,7 @@ layers.push(new Layer("shoes"));
 layers.push(new Layer("socks"));
 
 components.push(new Component("peebs-hair", layers[0], 154, 0, 32, -7, 0, 0, 0, 40));
-components.push(new Component("long-hair", layers[0], 112, 8, 30, 0, 0, 0, 0, 0));
+components.push(new Component("long-hair", layers[0], 112, 8, 30, 0, 0, 0, 0, 28));
 components.push(new Component("belt-hat", layers[0], 40, 0, 7, -21, 0, 0, 0, 64));
 components.push(new Component("wizard-hat", layers[0], -6, 0, 7, -33, 0, 0, 0, 40));
 components.push(new Component("short-hair", layers[0], 148, 68, 30, 0, 0, 0, 0, 0));
