@@ -143,10 +143,10 @@ const render = () => {
         componentPiece.component.element.style.left = getPX(getComponentsXStart() + componentPiece.component.x);
         componentPiece.component.element.style.width = componentPiece.element.style.width;
         componentPiece.component.element.style.height = componentPiece.element.style.height;
-        componentPiece.component.innerElement.style.top = getPX(componentPiece.component.clickY);
-        componentPiece.component.innerElement.style.left = getPX(componentPiece.component.clickX);
-        componentPiece.component.innerElement.style.width = getPX(getElmWidth(componentPiece.element) - componentPiece.component.clickX * 2);
-        componentPiece.component.innerElement.style.height = getPX(getElmHeight(componentPiece.element) - componentPiece.component.clickY * 2);
+        componentPiece.component.innerElement.style.top = getPX(componentPiece.component.clickTop);
+        componentPiece.component.innerElement.style.left = getPX(componentPiece.component.clickLeft);
+        componentPiece.component.innerElement.style.width = getPX(getElmWidth(componentPiece.element) - componentPiece.component.clickLeft - componentPiece.component.clickRight);
+        componentPiece.component.innerElement.style.height = getPX(getElmHeight(componentPiece.element) - componentPiece.component.clickTop - componentPiece.component.clickBottom);
     });
     backgrounds.forEach((background) => {
         background.cloudsElement.style.backgroundPosition = getPX(background.cloudsPosition);
@@ -324,15 +324,17 @@ class Layer {
 }
 
 class Component {
-    constructor(slug, layer, startX, startY, snapX, snapY, clickX, clickY) {
+    constructor(slug, layer, startX, startY, snapX, snapY, clickLeft, clickTop, clickRight, clickBottom) {
         this.slug = slug;
         this.layer = layer;
         this.startX = startX;
         this.startY = startY;
         this.snapX = snapX;
         this.snapY = snapY;
-        this.clickX = clickX;
-        this.clickY = clickY;
+        this.clickLeft = clickLeft;
+        this.clickTop = clickTop;
+        this.clickRight = clickRight;
+        this.clickBottom = clickBottom;
 
         this.x = this.startX;
         this.y = this.startY;
@@ -365,9 +367,9 @@ class Component {
         const gameY = e.clientY - gameElement.offsetTop;
         const newX = Math.round(gameX / getScale()) - getComponentsXStart() - Math.round(this.getWidth() * (this.mousedownX / 100));
         const newY = Math.round(gameY / getScale()) - getComponentsYStart() - Math.round(this.getHeight() * (this.mousedownY / 100));
-        if (newX + getComponentsXStart() >= this.clickX && newY + getComponentsYStart() >= this.clickY && newX + getComponentsXStart() + this.getWidth() - this.clickX <= screenWidth && newY + getComponentsYStart() + this.getHeight() - this.clickY <= screenHeight) {
-            this.x = newX - this.clickX;
-            this.y = newY - this.clickY;
+        if (newX + getComponentsXStart() >= this.clickLeft && newY + getComponentsYStart() >= this.clickTop && newX + getComponentsXStart() + this.getWidth() - this.clickLeft <= screenWidth && newY + getComponentsYStart() + this.getHeight() - this.clickTop <= screenHeight) {
+            this.x = newX - this.clickLeft;
+            this.y = newY - this.clickTop;
             render();
         }
     }
@@ -557,50 +559,50 @@ layers.push(new Layer("clothes"));
 layers.push(new Layer("shoes"));
 layers.push(new Layer("socks"));
 
-components.push(new Component("peebs-hair", layers[0], 154, 0, 32, -7, 0, 0));
-components.push(new Component("long-hair", layers[0], 112, 8, 30, 0, 0, 0));
-components.push(new Component("belt-hat", layers[0], 40, 0, 7, -21, 0, 0));
-components.push(new Component("wizard-hat", layers[0], -6, 0, 7, -33, 0, 0));
-components.push(new Component("short-hair", layers[0], 148, 68, 30, 0, 0, 0));
-components.push(new Component("gf-hair", layers[0], 96, 82, 26, 0, 0, 0));
-components.push(new Component("ponytail", layers[0], 50, 86, 30, 0, 0, 0));
-components.push(new Component("cowboy-hat", layers[0], -8, 60, 20, 0, 0, 0));
-components.push(new Component("spats", layers[1], 108, 90, 22, 94, 0, 0));
-components.push(new Component("sports-bra", layers[1], 36, 90, 27, 47, 0, 0));
-components.push(new Component("corset", layers[1], 152, 20, 27, 61, 0, 0));
-components.push(new Component("swimsuit", layers[1], 112, 8, 27, 47, 0, 0));
-components.push(new Component("bikini-bottom", layers[1], 84, 56, 35, 100, 0, 0));
-components.push(new Component("bikini-top", layers[1], 76, 8, 27, 47, 0, 0));
-components.push(new Component("white-underwear", layers[1], 41, 56, 34, 97, 0, 0));
-components.push(new Component("white-bra", layers[1], 35, 8, 27, 47, 0, 0));
-components.push(new Component("black-underwear", layers[1], 0, 56, 34, 97, 0, 0));
-components.push(new Component("black-bra", layers[1], -7, 8, 27, 47, 0, 0));
-components.push(new Component("yellow-shirt", layers[2], 142, 0, 27, 47, 0, 0));
-components.push(new Component("overalls", layers[2], 122, 0, 7, 47, 0, 0));
-components.push(new Component("wizard-dress", layers[2], 84, 4, 15, 46, 0, 0));
-components.push(new Component("maid-outfit", layers[2], 42, 0, 14, 40, 0, 0));
-components.push(new Component("gf-dress", layers[2], -4, 4, 15, 46, 0, 0));
-components.push(new Component("sleeved-dress", layers[2], 126, 52, 15, 47, 0, 0));
-components.push(new Component("belts-dress", layers[2], 90, 44, 14, 40, 0, 0));
-components.push(new Component("kimono", layers[2], 44, 48, 14, 47, 0, 0));
-components.push(new Component("long-skirt", layers[2], -6, 76, 7, 93, 0, 0));
-components.push(new Component("uniform-shirt", layers[2], 15, 30, 27, 47, 0, 0));
-components.push(new Component("flipflops", layers[3], 92, 108, -1, 118, 0, 0));
-components.push(new Component("rollerskates", layers[3], -4, 88, 0, 116, 0, 0));
-components.push(new Component("converses", layers[3], 94, 68, 0, 118, 0, 0));
-components.push(new Component("boots", layers[3], -4, 48, 0, 116, 0, 0));
-components.push(new Component("heels", layers[3], 96, 28, 0, 118, 0, 0));
-components.push(new Component("school-shoes", layers[3], -4, 8, 0, 116, 0, 0));
-components.push(new Component("mask", layers[4], 164, 116, 38, 32, 0, 0));
-components.push(new Component("eyepatch", layers[4], 112, 116, 35, 21, 0, 0));
-components.push(new Component("glove", layers[4], 64, 100, 28, 112, 0, 0));
-components.push(new Component("sunglasses", layers[4], 8, 116, 34, 25, 0, 0));
-components.push(new Component("rugby-socks", layers[4], 96, 64, 0, 116, 0, 0));
-components.push(new Component("stockings", layers[4], -4, 48, 0, 92, 0, 0));
-components.push(new Component("school-socks", layers[4], 96, 40, 0, 120, 0, 0));
-components.push(new Component("garter", layers[4], -4, 32, 0, 110, 0, 0));
-components.push(new Component("short-socks", layers[4], 96, 16, 0, 120, 0, 0));
-components.push(new Component("wizard-socks", layers[4], -4, 8, 0, 115, 0, 0));
+components.push(new Component("peebs-hair", layers[0], 154, 0, 32, -7, 0, 0, 0, 40));
+components.push(new Component("long-hair", layers[0], 112, 8, 30, 0, 0, 0, 0, 0));
+components.push(new Component("belt-hat", layers[0], 40, 0, 7, -21, 0, 0, 0, 64));
+components.push(new Component("wizard-hat", layers[0], -6, 0, 7, -33, 0, 0, 0, 40));
+components.push(new Component("short-hair", layers[0], 148, 68, 30, 0, 0, 0, 0, 0));
+components.push(new Component("gf-hair", layers[0], 96, 82, 26, 0, 0, 0, 0, 0));
+components.push(new Component("ponytail", layers[0], 50, 86, 30, 0, 0, 0, 0, 0));
+components.push(new Component("cowboy-hat", layers[0], -8, 60, 20, 0, 0, 0, 0, 0));
+components.push(new Component("spats", layers[1], 108, 90, 22, 94, 0, 0, 0, 0));
+components.push(new Component("sports-bra", layers[1], 36, 90, 27, 47, 0, 0, 0, 0));
+components.push(new Component("corset", layers[1], 152, 20, 27, 61, 0, 0, 0, 0));
+components.push(new Component("swimsuit", layers[1], 112, 8, 27, 47, 0, 0, 0, 0));
+components.push(new Component("bikini-bottom", layers[1], 84, 56, 35, 100, 0, 0, 0, 0));
+components.push(new Component("bikini-top", layers[1], 76, 8, 27, 47, 0, 0, 0, 0));
+components.push(new Component("white-underwear", layers[1], 41, 56, 34, 97, 0, 0, 0, 0));
+components.push(new Component("white-bra", layers[1], 35, 8, 27, 47, 0, 0, 0, 0));
+components.push(new Component("black-underwear", layers[1], 0, 56, 34, 97, 0, 0, 0, 0));
+components.push(new Component("black-bra", layers[1], -7, 8, 27, 47, 0, 0, 0, 0));
+components.push(new Component("yellow-shirt", layers[2], 142, 0, 27, 47, 0, 0, 0, 0));
+components.push(new Component("overalls", layers[2], 122, 0, 7, 47, 0, 0, 0, 0));
+components.push(new Component("wizard-dress", layers[2], 84, 4, 15, 46, 0, 0, 0, 0));
+components.push(new Component("maid-outfit", layers[2], 42, 0, 14, 40, 0, 0, 0, 0));
+components.push(new Component("gf-dress", layers[2], -4, 4, 15, 46, 0, 0, 0, 0));
+components.push(new Component("sleeved-dress", layers[2], 126, 52, 15, 47, 0, 0, 0, 0));
+components.push(new Component("belts-dress", layers[2], 90, 44, 14, 40, 0, 0, 0, 0));
+components.push(new Component("kimono", layers[2], 44, 48, 14, 47, 0, 0, 0, 0));
+components.push(new Component("long-skirt", layers[2], -6, 76, 7, 93, 0, 0, 0, 0));
+components.push(new Component("uniform-shirt", layers[2], 15, 30, 27, 47, 0, 0, 0, 0));
+components.push(new Component("flipflops", layers[3], 92, 108, -1, 118, 0, 0, 0, 0));
+components.push(new Component("rollerskates", layers[3], -4, 88, 0, 116, 0, 0, 0, 0));
+components.push(new Component("converses", layers[3], 94, 68, 0, 118, 0, 0, 0, 0));
+components.push(new Component("boots", layers[3], -4, 48, 0, 116, 0, 0, 0, 0));
+components.push(new Component("heels", layers[3], 96, 28, 0, 118, 0, 0, 0, 0));
+components.push(new Component("school-shoes", layers[3], -4, 8, 0, 116, 0, 0, 0, 0));
+components.push(new Component("mask", layers[4], 164, 116, 38, 32, 0, 0, 0, 0));
+components.push(new Component("eyepatch", layers[4], 112, 116, 35, 21, 0, 0, 0, 0));
+components.push(new Component("glove", layers[4], 64, 100, 28, 112, 0, 0, 0, 0));
+components.push(new Component("sunglasses", layers[4], 8, 116, 34, 25, 0, 0, 0, 0));
+components.push(new Component("rugby-socks", layers[4], 96, 64, 0, 116, 0, 0, 0, 0));
+components.push(new Component("stockings", layers[4], -4, 48, 0, 92, 0, 0, 0, 0));
+components.push(new Component("school-socks", layers[4], 96, 40, 0, 120, 0, 0, 0, 0));
+components.push(new Component("garter", layers[4], -4, 32, 0, 110, 0, 0, 0, 0));
+components.push(new Component("short-socks", layers[4], 96, 16, 0, 120, 0, 0, 0, 0));
+components.push(new Component("wizard-socks", layers[4], -4, 8, 0, 115, 0, 0, 0, 0));
 
 componentPieces.push(new ComponentPiece("peebs-hair", components[0], 4));
 componentPieces.push(new ComponentPiece("long-hair-back", components[1], 4));
