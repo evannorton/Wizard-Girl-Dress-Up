@@ -56,7 +56,7 @@ const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.le
 
 const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
 
-const getScale = () => innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth;
+const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
 const getPXAmount = (px) => Number(px.replace("px", ""));
 const getElmWidth = (elm) => Number(elm.getAttribute("width"));
