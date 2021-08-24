@@ -202,6 +202,20 @@ const onWindowKeyup = (e) => {
     }
 };
 
+const getDefaultComponents = () => [
+    components[3],
+    components[16],
+    components[17],
+    components[20],
+    components[43]
+];
+
+const snapDefaultComponents = () => {
+    getDefaultComponents().forEach((component) => {
+        component.snap();
+    });
+};
+
 const init = () => {
     gameElement.classList.add("loaded");
     for (const elm of document.getElementsByTagName("img")) {
@@ -212,11 +226,7 @@ const init = () => {
     render();
     layers[0].select();
     backgrounds[0].select();
-    components[3].snap();
-    components[16].snap();
-    components[17].snap();
-    components[20].snap();
-    components[43].snap();
+    snapDefaultComponents();
     addEventListener("resize", onWindowResize);
     addEventListener("click", onWindowClick);
     addEventListener("keydown", onWindowKeydown);
@@ -714,9 +724,22 @@ backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
 
+const reset = () => {
+    layers[0].select();
+    components.forEach((component) => {
+        component.unsnap();
+        if (getDefaultComponents().every((innerComponent) => innerComponent.slug !== component.slug)) {
+            component.x = component.startX;
+            component.y = component.startY;
+        }
+    });
+    snapDefaultComponents();
+};
+
 topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") === false, () => {
     gameElement.classList.remove("dress-up");
     gameElement.classList.add("title");
+    reset();
 }));
 topIcons.push(new TopIcon("settings", () => true, openSettings));
 topIcons.push(new TopIcon("muted", () => music.muted, () => { music.muted = false; }));
