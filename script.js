@@ -12,6 +12,9 @@ const creditsElement = document.getElementById("credits");
 const retrommoLinkElement = document.getElementById("retrommo-link");
 const thlurpLinkElement = document.getElementById("thlurp-link");
 const settingsHeadingElement = document.getElementById("settings-heading");
+const settingsVolumeElement = document.getElementById("settings-volume");
+const settingsCensoredElement = document.getElementById("settings-censored");
+const settingsBackgroundElement = document.getElementById("settings-background");
 const backgroundsElement = document.getElementById("backgrounds");
 const roomElement = document.getElementById("room");
 const roomCodeElement = document.getElementById("room-code");
@@ -39,6 +42,9 @@ let loadedRoomImage = false;
 let loadedRoomCodeImage = false;
 let loadedBaseImage = false;
 let loadedSettingsHeadingImage = false;
+let loadedSettingsVolumeImage = false;
+let loadedSettingsCensoredImage = false;
+let loadedSettingsBackgroundImage = false;
 let loadedTopIconImages = 0;
 let loadedButtonImages = 0;
 let loadedLayerIconImages = 0;
@@ -56,6 +62,9 @@ const roomImageLoaded = () => loadedRoomImage;
 const roomCodeImageLoaded = () => loadedRoomCodeImage;
 const baseImageLoaded = () => loadedBaseImage;
 const settingsHeadingImageLoaded = () => loadedSettingsHeadingImage;
+const settingsVolumeImageLoaded = () => loadedSettingsVolumeImage;
+const settingsCensoredImageLoaded = () => loadedSettingsCensoredImage;
+const settingsBackgroundImageLoaded = () => loadedSettingsBackgroundImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
@@ -63,7 +72,7 @@ const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === background
 const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsBackgroundImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -120,6 +129,12 @@ const render = () => {
     secondLinkElement.style.height = getPX(12);
     settingsHeadingElement.style.top = getPX(32);
     settingsHeadingElement.style.left = getPX(168);
+    settingsVolumeElement.style.top = getPX(72);
+    settingsVolumeElement.style.left = getPX(168);
+    settingsCensoredElement.style.top = getPX(112);
+    settingsCensoredElement.style.left = getPX(168);
+    settingsBackgroundElement.style.top = getPX(152);
+    settingsBackgroundElement.style.left = getPX(168);
     const filteredTopIcons = topIcons.filter((icon) => icon.condition());
     topIcons.forEach((topIcon) => {
         topIcon.element.style.display = topIcon.condition() ? "block" : "none";
@@ -581,6 +596,25 @@ const onSettingsHeadingElementLoad = () => {
 }
 settingsHeadingElement.addEventListener("load", onSettingsHeadingElementLoad);
 settingsHeadingElement.src = "./settings-heading.png";
+const onSettingsVolumeElementLoad = () => {
+    loadedSettingsVolumeImage = true;
+    initIfImagesLoaded();
+}
+settingsVolumeElement.addEventListener("load", onSettingsVolumeElementLoad);
+settingsVolumeElement.src = "./settings-volume.png";
+const onSettingsCensoredElementLoad = () => {
+    loadedSettingsCensoredImage = true;
+    initIfImagesLoaded();
+}
+settingsCensoredElement.addEventListener("load", onSettingsCensoredElementLoad);
+settingsCensoredElement.src = "./settings-censored.png";
+const onSettingsBackgroundElementLoad = () => {
+    loadedSettingsBackgroundImage = true;
+    initIfImagesLoaded();
+}
+settingsBackgroundElement.addEventListener("load", onSettingsBackgroundElementLoad);
+settingsBackgroundElement.src = "./settings-background.png";
+
 
 const onRoomElementLoad = () => {
     loadedRoomImage = true;
@@ -625,7 +659,7 @@ const reset = () => {
     snapDefaultComponents();
 };
 buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), openSettings));
-buttons.push(new Button("reset", 167, 50, () => gameElement.classList.contains("settings"), reset));
+buttons.push(new Button("reset", 167, 47, () => gameElement.classList.contains("settings"), reset));
 
 layers.push(new Layer("hair"));
 layers.push(new Layer("underwear"));
