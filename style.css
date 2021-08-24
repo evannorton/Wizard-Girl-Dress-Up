@@ -159,3 +159,15 @@ img,
 .volume-tick {
     pointer-events: none;
 }
+
+#settings-censored-box {
+    cursor: url(./cursors/pointer.png), auto;
+}
+
+#settings-censored-box.checked {
+    background-color: #ff82ce;
+}
+
+#game.censored .required-for-censored .component-inner {
+    pointer-events: none;
+}

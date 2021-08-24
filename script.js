@@ -16,6 +16,7 @@ const thlurpLinkElement = document.getElementById("thlurp-link");
 const settingsHeadingElement = document.getElementById("settings-heading");
 const settingsVolumeElement = document.getElementById("settings-volume");
 const settingsCensoredElement = document.getElementById("settings-censored");
+const settingsCensoredBoxElement = document.getElementById("settings-censored-box");
 const settingsVolumeNotchesElement = document.getElementById("settings-volume-notches");
 const settingsBackgroundElement = document.getElementById("settings-background");
 const settingsBackgroundsElement = document.getElementById("settings-backgrounds");
@@ -49,6 +50,7 @@ let loadedBaseImage = false;
 let loadedSettingsHeadingImage = false;
 let loadedSettingsVolumeImage = false;
 let loadedSettingsCensoredImage = false;
+let loadedSettingsCensoredBoxImage = false;
 let loadedSettingsBackgroundImage = false;
 let loadedVolumeEnabledImages = 0;
 let loadedVolumeDisabledImages = 0;
@@ -72,6 +74,7 @@ const baseImageLoaded = () => loadedBaseImage;
 const settingsHeadingImageLoaded = () => loadedSettingsHeadingImage;
 const settingsVolumeImageLoaded = () => loadedSettingsVolumeImage;
 const settingsCensoredImageLoaded = () => loadedSettingsCensoredImage;
+const settingsCensoredBoxImageLoaded = () => loadedSettingsCensoredBoxImage;
 const settingsBackgroundImageLoaded = () => loadedSettingsBackgroundImage;
 const volumeEnabledImagesLoaded = () => loadedVolumeEnabledImages === maxVolume;
 const volumeDisabledImagesLoaded = () => loadedVolumeDisabledImages === maxVolume;
@@ -83,7 +86,7 @@ const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === background
 const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsCensoredBoxImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -165,9 +168,11 @@ const render = () => {
         button.element.style.width = button.unpressedElement.style.width;
         button.element.style.height = button.pressedElement.style.height;
     });
+    settingsCensoredBoxElement.style.left = getPX(167);
+    settingsCensoredBoxElement.style.top = getPX(126);
     settingsVolumeNotchesElement.style.position = "absolute";
     settingsVolumeNotchesElement.style.top = getPX(86);
-    settingsVolumeNotchesElement.style.left = getPX(169);
+    settingsVolumeNotchesElement.style.left = getPX(167);
     settingsVolumeNotchesElement.style.height = getPX(16);
     settingsVolumeNotchesElement.style.width = getPX(6 * maxVolume - 1);
     for (let i = 0; i < maxVolume; i++) {
@@ -188,7 +193,7 @@ const render = () => {
     });
     backgrounds.filter((background) => background.containerElement.classList.contains("selected") === false).forEach((background, key) => {
         background.iconElement.style.top = getPX(166);
-        background.iconElement.style.left = getPX(169 + key * 28);
+        background.iconElement.style.left = getPX(167 + key * 28);
     });
     roomCodeClickboxElement.style.left = getPX(362);
     roomCodeClickboxElement.style.top = getPX(173);
@@ -262,8 +267,8 @@ const onWindowKeyup = (e) => {
 
 const getDefaultComponents = () => [
     components[3],
-    components[16],
-    components[17],
+    components[8],
+    components[9],
     components[20],
     components[43]
 ];
@@ -404,7 +409,7 @@ class Layer {
 }
 
 class Component {
-    constructor(slug, layer, startX, startY, snapX, snapY, clickLeft, clickTop, clickRight, clickBottom) {
+    constructor(slug, layer, startX, startY, snapX, snapY, clickLeft, clickTop, clickRight, clickBottom, requiredForCensored) {
         this.slug = slug;
         this.layer = layer;
         this.startX = startX;
@@ -415,6 +420,7 @@ class Component {
         this.clickTop = clickTop;
         this.clickRight = clickRight;
         this.clickBottom = clickBottom;
+        this.requiredForCensored = requiredForCensored;
 
         this.x = this.startX;
         this.y = this.startY;
@@ -424,6 +430,9 @@ class Component {
 
         this.element = document.createElement("div");
         this.element.classList.add("component");
+        if (this.requiredForCensored) {
+            this.element.classList.add("required-for-censored");
+        }
 
         this.innerElement = document.createElement("div");
         this.innerElement.classList.add("component-inner");
@@ -665,6 +674,28 @@ const onSettingsBackgroundElementLoad = () => {
 settingsBackgroundElement.addEventListener("load", onSettingsBackgroundElementLoad);
 settingsBackgroundElement.src = "./settings-background.png";
 
+const onSettingsCensoredBoxElementLoad = () => {
+    loadedSettingsCensoredBoxImage = true;
+    initIfImagesLoaded();
+}
+settingsCensoredBoxElement.addEventListener("load", onSettingsCensoredBoxElementLoad);
+settingsCensoredBoxElement.src = "./censored-box.png";
+const onSettingsCensoredBoxElementClick = (e) => {
+    if (e.target.classList.contains("checked")) {
+        e.target.classList.remove("checked");
+        gameElement.classList.remove("censored");
+    }
+    else {
+        e.target.classList.add("checked");
+        gameElement.classList.add("censored");
+        components.forEach((component) => {
+            if (component.requiredForCensored) {
+                component.snap();
+            }
+        });
+    }
+};
+settingsCensoredBoxElement.addEventListener("click", onSettingsCensoredBoxElementClick);
 
 const onRoomElementLoad = () => {
     loadedRoomImage = true;
@@ -752,50 +783,50 @@ layers.push(new Layer("clothes"));
 layers.push(new Layer("shoes"));
 layers.push(new Layer("socks"));
 
-components.push(new Component("peebs-hair", layers[0], 154, 0, 32, -7, 0, 0, 0, 40));
-components.push(new Component("long-hair", layers[0], 112, 8, 30, 0, 0, 0, 0, 28));
-components.push(new Component("belt-hat", layers[0], 40, 0, 7, -21, 0, 0, 0, 64));
-components.push(new Component("wizard-hat", layers[0], -6, 0, 7, -33, 0, 0, 0, 40));
-components.push(new Component("short-hair", layers[0], 148, 68, 30, 0, 0, 0, 0, 0));
-components.push(new Component("gf-hair", layers[0], 96, 82, 26, 0, 0, 0, 0, 0));
-components.push(new Component("ponytail", layers[0], 50, 86, 30, 0, 0, 0, 0, 0));
-components.push(new Component("cowboy-hat", layers[0], -8, 60, 20, 0, 0, 0, 0, 0));
-components.push(new Component("spats", layers[1], 108, 90, 22, 94, 0, 0, 0, 0));
-components.push(new Component("sports-bra", layers[1], 36, 90, 27, 47, 0, 0, 0, 0));
-components.push(new Component("corset", layers[1], 152, 20, 27, 61, 0, 0, 0, 0));
-components.push(new Component("swimsuit", layers[1], 112, 8, 27, 47, 0, 0, 0, 0));
-components.push(new Component("bikini-bottom", layers[1], 84, 56, 35, 100, 0, 0, 0, 0));
-components.push(new Component("bikini-top", layers[1], 76, 8, 27, 47, 0, 0, 0, 0));
-components.push(new Component("white-underwear", layers[1], 41, 56, 34, 97, 0, 0, 0, 0));
-components.push(new Component("white-bra", layers[1], 35, 8, 27, 47, 0, 0, 0, 0));
-components.push(new Component("black-underwear", layers[1], 0, 56, 34, 97, 0, 0, 0, 0));
-components.push(new Component("black-bra", layers[1], -7, 8, 27, 47, 0, 0, 0, 0));
-components.push(new Component("yellow-shirt", layers[2], 142, 0, 27, 47, 0, 0, 0, 0));
-components.push(new Component("overalls", layers[2], 122, 0, 7, 47, 0, 0, 0, 0));
-components.push(new Component("wizard-dress", layers[2], 84, 4, 15, 46, 0, 0, 0, 0));
-components.push(new Component("maid-outfit", layers[2], 42, 0, 14, 40, 0, 0, 0, 0));
-components.push(new Component("gf-dress", layers[2], -4, 4, 15, 46, 0, 0, 0, 0));
-components.push(new Component("sleeved-dress", layers[2], 126, 52, 15, 47, 0, 0, 0, 0));
-components.push(new Component("belts-dress", layers[2], 90, 44, 14, 40, 0, 0, 0, 0));
-components.push(new Component("kimono", layers[2], 44, 48, 14, 47, 0, 0, 0, 0));
-components.push(new Component("long-skirt", layers[2], -6, 76, 7, 93, 0, 0, 0, 0));
-components.push(new Component("uniform-shirt", layers[2], 15, 30, 27, 47, 0, 0, 0, 0));
-components.push(new Component("flipflops", layers[3], 92, 108, -1, 118, 0, 0, 0, 0));
-components.push(new Component("rollerskates", layers[3], -4, 88, 0, 116, 0, 0, 0, 0));
-components.push(new Component("converses", layers[3], 94, 68, 0, 118, 0, 0, 0, 0));
-components.push(new Component("boots", layers[3], -4, 48, 0, 116, 0, 0, 0, 0));
-components.push(new Component("heels", layers[3], 96, 28, 0, 118, 0, 0, 0, 0));
-components.push(new Component("school-shoes", layers[3], -4, 8, 0, 116, 0, 0, 0, 0));
-components.push(new Component("mask", layers[4], 164, 116, 38, 32, 0, 0, 0, 0));
-components.push(new Component("eyepatch", layers[4], 112, 116, 35, 21, 0, 0, 0, 0));
-components.push(new Component("glove", layers[4], 64, 100, 28, 112, 0, 0, 0, 0));
-components.push(new Component("sunglasses", layers[4], 8, 116, 34, 25, 0, 0, 0, 0));
-components.push(new Component("rugby-socks", layers[4], 96, 64, 0, 116, 0, 0, 0, 0));
-components.push(new Component("stockings", layers[4], -4, 48, 0, 92, 0, 0, 0, 0));
-components.push(new Component("school-socks", layers[4], 96, 40, 0, 120, 0, 0, 0, 0));
-components.push(new Component("garter", layers[4], -4, 32, 0, 110, 0, 0, 0, 0));
-components.push(new Component("short-socks", layers[4], 96, 16, 0, 120, 0, 0, 0, 0));
-components.push(new Component("wizard-socks", layers[4], -4, 8, 0, 115, 0, 0, 0, 0));
+components.push(new Component("peebs-hair", layers[0], 154, 0, 32, -7, 0, 0, 0, 40, false));
+components.push(new Component("long-hair", layers[0], 112, 8, 30, 0, 0, 0, 0, 28, false));
+components.push(new Component("belt-hat", layers[0], 40, 0, 7, -21, 0, 0, 0, 64, false));
+components.push(new Component("wizard-hat", layers[0], -6, 0, 7, -33, 0, 0, 0, 40, false));
+components.push(new Component("short-hair", layers[0], 148, 68, 30, 0, 0, 0, 0, 0, false));
+components.push(new Component("gf-hair", layers[0], 96, 82, 26, 0, 0, 0, 0, 0, false));
+components.push(new Component("ponytail", layers[0], 50, 86, 30, 0, 0, 0, 0, 0, false));
+components.push(new Component("cowboy-hat", layers[0], -8, 60, 20, 0, 0, 0, 0, 0, false));
+components.push(new Component("black-underwear", layers[1], 0, 56, 34, 97, 0, 0, 0, 0, true));
+components.push(new Component("black-bra", layers[1], -7, 8, 27, 47, 0, 0, 0, 0, true));
+components.push(new Component("white-underwear", layers[1], 41, 56, 34, 97, 0, 0, 0, 0, false));
+components.push(new Component("white-bra", layers[1], 35, 8, 27, 47, 0, 0, 0, 0, false));
+components.push(new Component("bikini-bottom", layers[1], 84, 56, 35, 100, 0, 0, 0, 0, false));
+components.push(new Component("bikini-top", layers[1], 76, 8, 27, 47, 0, 0, 0, 0, false));
+components.push(new Component("swimsuit", layers[1], 112, 8, 27, 47, 0, 0, 0, 0, false));
+components.push(new Component("corset", layers[1], 152, 20, 27, 61, 0, 0, 0, 0, false));
+components.push(new Component("sports-bra", layers[1], 36, 90, 27, 47, 0, 0, 0, 0, false));
+components.push(new Component("spats", layers[1], 108, 90, 22, 94, 0, 0, 0, 0, false));
+components.push(new Component("yellow-shirt", layers[2], 142, 0, 27, 47, 0, 0, 0, 0, false));
+components.push(new Component("overalls", layers[2], 122, 0, 7, 47, 0, 0, 0, 0, false));
+components.push(new Component("wizard-dress", layers[2], 84, 4, 15, 46, 0, 0, 0, 0, false));
+components.push(new Component("maid-outfit", layers[2], 42, 0, 14, 40, 0, 0, 0, 0, false));
+components.push(new Component("gf-dress", layers[2], -4, 4, 15, 46, 0, 0, 0, 0, false));
+components.push(new Component("sleeved-dress", layers[2], 126, 52, 15, 47, 0, 0, 0, 0, false));
+components.push(new Component("belts-dress", layers[2], 90, 44, 14, 40, 0, 0, 0, 0, false));
+components.push(new Component("kimono", layers[2], 44, 48, 14, 47, 0, 0, 0, 0, false));
+components.push(new Component("long-skirt", layers[2], -6, 76, 7, 93, 0, 0, 0, 0, false));
+components.push(new Component("uniform-shirt", layers[2], 15, 30, 27, 47, 0, 0, 0, 0, false));
+components.push(new Component("flipflops", layers[3], 92, 108, -1, 118, 0, 0, 0, 0, false));
+components.push(new Component("rollerskates", layers[3], -4, 88, 0, 116, 0, 0, 0, 0, false));
+components.push(new Component("converses", layers[3], 94, 68, 0, 118, 0, 0, 0, 0, false));
+components.push(new Component("boots", layers[3], -4, 48, 0, 116, 0, 0, 0, 0, false));
+components.push(new Component("heels", layers[3], 96, 28, 0, 118, 0, 0, 0, 0, false));
+components.push(new Component("school-shoes", layers[3], -4, 8, 0, 116, 0, 0, 0, 0, false));
+components.push(new Component("mask", layers[4], 164, 116, 38, 32, 0, 0, 0, 0, false));
+components.push(new Component("eyepatch", layers[4], 112, 116, 35, 21, 0, 0, 0, 0, false));
+components.push(new Component("glove", layers[4], 64, 100, 28, 112, 0, 0, 0, 0, false));
+components.push(new Component("sunglasses", layers[4], 8, 116, 34, 25, 0, 0, 0, 0, false));
+components.push(new Component("rugby-socks", layers[4], 96, 64, 0, 116, 0, 0, 0, 0, false));
+components.push(new Component("stockings", layers[4], -4, 48, 0, 92, 0, 0, 0, 0, false));
+components.push(new Component("school-socks", layers[4], 96, 40, 0, 120, 0, 0, 0, 0, false));
+components.push(new Component("garter", layers[4], -4, 32, 0, 110, 0, 0, 0, 0, false));
+components.push(new Component("short-socks", layers[4], 96, 16, 0, 120, 0, 0, 0, 0, false));
+components.push(new Component("wizard-socks", layers[4], -4, 8, 0, 115, 0, 0, 0, 0, false));
 
 componentPieces.push(new ComponentPiece("peebs-hair", components[0], 4));
 componentPieces.push(new ComponentPiece("long-hair-back", components[1], 4));
@@ -811,25 +842,25 @@ componentPieces.push(new ComponentPiece("gf-hair-front", components[5], 9));
 componentPieces.push(new ComponentPiece("ponytail-back", components[6], 4));
 componentPieces.push(new ComponentPiece("ponytail-front", components[6], 9));
 componentPieces.push(new ComponentPiece("cowboy-hat", components[7], 9));
-componentPieces.push(new ComponentPiece("spats-back", components[8], 1));
-componentPieces.push(new ComponentPiece("spats-front", components[8], 5));
-componentPieces.push(new ComponentPiece("sports-bra-back", components[9], 1));
-componentPieces.push(new ComponentPiece("sports-bra-front", components[9], 5));
-componentPieces.push(new ComponentPiece("corset-back", components[10], 1));
-componentPieces.push(new ComponentPiece("corset-front", components[10], 5));
-componentPieces.push(new ComponentPiece("swimsuit-back", components[11], 1));
-componentPieces.push(new ComponentPiece("swimsuit-front", components[11], 5));
+componentPieces.push(new ComponentPiece("black-underwear-back", components[8], 1));
+componentPieces.push(new ComponentPiece("black-underwear-front", components[8], 5));
+componentPieces.push(new ComponentPiece("black-bra-back", components[9], 1));
+componentPieces.push(new ComponentPiece("black-bra-front", components[9], 5));
+componentPieces.push(new ComponentPiece("white-underwear-back", components[10], 1));
+componentPieces.push(new ComponentPiece("white-underwear-front", components[10], 5));
+componentPieces.push(new ComponentPiece("white-bra-back", components[11], 1));
+componentPieces.push(new ComponentPiece("white-bra-front", components[11], 5));
 componentPieces.push(new ComponentPiece("bikini-bottom-back", components[12], 1));
 componentPieces.push(new ComponentPiece("bikini-bottom-front", components[12], 5));
 componentPieces.push(new ComponentPiece("bikini-top", components[13], 5));
-componentPieces.push(new ComponentPiece("white-underwear-back", components[14], 1));
-componentPieces.push(new ComponentPiece("white-underwear-front", components[14], 5));
-componentPieces.push(new ComponentPiece("white-bra-back", components[15], 1));
-componentPieces.push(new ComponentPiece("white-bra-front", components[15], 5));
-componentPieces.push(new ComponentPiece("black-underwear-back", components[16], 1));
-componentPieces.push(new ComponentPiece("black-underwear-front", components[16], 5));
-componentPieces.push(new ComponentPiece("black-bra-back", components[17], 1));
-componentPieces.push(new ComponentPiece("black-bra-front", components[17], 5));
+componentPieces.push(new ComponentPiece("swimsuit-back", components[14], 1));
+componentPieces.push(new ComponentPiece("swimsuit-front", components[14], 5));
+componentPieces.push(new ComponentPiece("corset-back", components[15], 1));
+componentPieces.push(new ComponentPiece("corset-front", components[15], 5));
+componentPieces.push(new ComponentPiece("sports-bra-back", components[16], 1));
+componentPieces.push(new ComponentPiece("sports-bra-front", components[16], 5));
+componentPieces.push(new ComponentPiece("spats-back", components[17], 1));
+componentPieces.push(new ComponentPiece("spats-front", components[17], 5));
 componentPieces.push(new ComponentPiece("yellow-shirt-back", components[18], 1));
 componentPieces.push(new ComponentPiece("yellow-shirt-front", components[18], 8));
 componentPieces.push(new ComponentPiece("overalls-back", components[19], 1));
