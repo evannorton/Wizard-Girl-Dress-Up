@@ -162,7 +162,7 @@ const render = () => {
     });
     backgrounds.filter((background) => background.containerElement.classList.contains("selected") === false).forEach((background, key) => {
         background.iconElement.style.top = getPX(166);
-        background.iconElement.style.left = getPX(168 + key * 28);
+        background.iconElement.style.left = getPX(169 + key * 28);
     });
     roomCodeClickboxElement.style.left = getPX(362);
     roomCodeClickboxElement.style.top = getPX(173);
