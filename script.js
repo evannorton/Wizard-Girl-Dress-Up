@@ -116,7 +116,7 @@ const render = () => {
     topIcons.forEach((topIcon, key) => {
         topIcon.element.style.display = topIcon.condition() ? "block" : "none";
         topIcon.element.style.top = getPX(12 - Math.floor(getElmHeight(topIcon.element) / 2));
-        topIcon.element.style.left = getPX(4 + key * 4 + getSumOfNumbers(topIcons.slice(0, key).map((icon) => getElmWidth(icon.element))));
+        topIcon.element.style.left = getPX(4 + key * 4 + getSumOfNumbers(topIcons.slice(0, key).map((icon) => icon.condition() ? getElmWidth(icon.element) : 0)));
     });
     buttons.forEach((button) => {
         button.element.style.display = button.condition() ? "block" : "none";
@@ -707,7 +707,7 @@ backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
 
-topIcons.push(new TopIcon("home", () => true));
+topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") === false));
 topIcons.push(new TopIcon("settings", () => true));
 topIcons.push(new TopIcon("muted", () => true));
 topIcons.push(new TopIcon("unmuted", () => true));
