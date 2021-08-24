@@ -15,6 +15,7 @@ const settingsHeadingElement = document.getElementById("settings-heading");
 const settingsVolumeElement = document.getElementById("settings-volume");
 const settingsCensoredElement = document.getElementById("settings-censored");
 const settingsBackgroundElement = document.getElementById("settings-background");
+const settingsBackgroundsElement = document.getElementById("settings-backgrounds");
 const backgroundsElement = document.getElementById("backgrounds");
 const roomElement = document.getElementById("room");
 const roomCodeElement = document.getElementById("room-code");
@@ -45,6 +46,7 @@ let loadedSettingsHeadingImage = false;
 let loadedSettingsVolumeImage = false;
 let loadedSettingsCensoredImage = false;
 let loadedSettingsBackgroundImage = false;
+let loadedBackgroundIconImages = 0;
 let loadedTopIconImages = 0;
 let loadedButtonImages = 0;
 let loadedLayerIconImages = 0;
@@ -65,6 +67,7 @@ const settingsHeadingImageLoaded = () => loadedSettingsHeadingImage;
 const settingsVolumeImageLoaded = () => loadedSettingsVolumeImage;
 const settingsCensoredImageLoaded = () => loadedSettingsCensoredImage;
 const settingsBackgroundImageLoaded = () => loadedSettingsBackgroundImage;
+const backgroundIconImagesLoaded = () => loadedBackgroundIconImages === backgrounds.length;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
@@ -72,7 +75,7 @@ const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === background
 const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsBackgroundImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -153,6 +156,13 @@ const render = () => {
         button.element.style.left = getPX(button.x);
         button.element.style.width = button.unpressedElement.style.width;
         button.element.style.height = button.pressedElement.style.height;
+    });
+    backgrounds.forEach((background) => {
+        background.iconElement.style.display = background.containerElement.classList.contains("selected") ? "none" : "block";
+    });
+    backgrounds.filter((background) => background.containerElement.classList.contains("selected") === false).forEach((background, key) => {
+        background.iconElement.style.top = getPX(166);
+        background.iconElement.style.left = getPX(168 + key * 28);
     });
     roomCodeClickboxElement.style.left = getPX(362);
     roomCodeClickboxElement.style.top = getPX(173);
@@ -520,6 +530,17 @@ class Background {
         this.containerElement.appendChild(this.treesElement);
         this.treesElement.addEventListener("load", this.onTreesElementLoad);
         this.treesElement.src = `./trees/${slug}.png`;
+
+        this.iconElement = document.createElement("img");
+        this.iconElement.classList.add("background-icon")
+        settingsBackgroundsElement.appendChild(this.iconElement);
+        this.iconElement.addEventListener("load", this.onIconElementLoad);
+        this.iconElement.src = `./background-icons/${slug}.png`;
+        this.iconElement.addEventListener("click", this.onIconElementClick);
+    }
+    onIconElementLoad = () => {
+        loadedBackgroundIconImages++;
+        initIfImagesLoaded();
     }
     onSkyElementLoad = () => {
         loadedBackgroundSkyImages++;
@@ -528,6 +549,9 @@ class Background {
     onTreesElementLoad = () => {
         loadedBackgroundTreeImages++;
         initIfImagesLoaded();
+    }
+    onIconElementClick = () => {
+        this.select();
     }
     select = () => {
         backgrounds.forEach((background) => {
@@ -659,7 +683,7 @@ const reset = () => {
     snapDefaultComponents();
 };
 buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), openSettings));
-buttons.push(new Button("reset", 167, 47, () => gameElement.classList.contains("settings"), reset));
+buttons.push(new Button("reset", 167, 46, () => gameElement.classList.contains("settings"), reset));
 
 layers.push(new Layer("hair"));
 layers.push(new Layer("underwear"));

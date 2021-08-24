@@ -147,3 +147,7 @@ img,
 #game:not(.settings) #settings {
     display: none;
 }
+
+.background-icon {
+    cursor: url(./cursors/pointer.png), auto;
+}
