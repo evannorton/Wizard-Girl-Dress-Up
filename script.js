@@ -352,12 +352,14 @@ class Button {
     }
     onElementMousedown = () => {
         this.element.classList.add("pressed");
+        render();
     }
     onWindowMouseup = () => {
         if (this.element.classList.contains("pressed") && this.condition()) {
             this.onPress();
             this.element.classList.remove("pressed");
         }
+        render();
     }
 }
 
@@ -603,6 +605,7 @@ class Background {
                 background.containerElement.classList.remove("selected");
             }
         });
+        render();
     }
     moveClouds = () => {
         if (this.cloudsPosition === 0) {
@@ -757,6 +760,7 @@ const onSettingsVolumeNotchesElementMouseup = (e) => {
     else {
         music.volume = e.offsetX / getPXAmount(e.target.style.width);
     }
+    render();
 };
 settingsVolumeNotchesElement.addEventListener("mouseup", onSettingsVolumeNotchesElementMouseup);
 
