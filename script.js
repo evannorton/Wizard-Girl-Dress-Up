@@ -113,10 +113,13 @@ const render = () => {
     secondLinkElement.style.left = retrommoFirst ? getPX(308) : getPX(290);
     secondLinkElement.style.width = getPX(secondLinkWidth);
     secondLinkElement.style.height = getPX(12);
-    topIcons.forEach((topIcon, key) => {
+    const filteredTopIcons = topIcons.filter((icon) => icon.condition());
+    topIcons.forEach((topIcon) => {
         topIcon.element.style.display = topIcon.condition() ? "block" : "none";
+    });
+    filteredTopIcons.forEach((topIcon, key) => {
         topIcon.element.style.top = getPX(12 - Math.floor(getElmHeight(topIcon.element) / 2));
-        topIcon.element.style.left = getPX(4 + key * 4 + getSumOfNumbers(topIcons.slice(0, key).map((icon) => icon.condition() ? getElmWidth(icon.element) : 0)));
+        topIcon.element.style.left = getPX(4 + key * 4 + getSumOfNumbers(filteredTopIcons.slice(0, key).map((innerTopIcon) => getElmWidth(innerTopIcon.element))));
     });
     buttons.forEach((button) => {
         button.element.style.display = button.condition() ? "block" : "none";
@@ -515,7 +518,7 @@ class Background {
 }
 
 class TopIcon {
-    constructor(slug, condition) {
+    constructor(slug, condition, onClick) {
         this.slug = slug;
 
         this.condition = condition;
@@ -525,6 +528,7 @@ class TopIcon {
         topIconsElement.appendChild(this.element);
         this.element.addEventListener("load", this.onElementLoad);
         this.element.src = `./top-icons/${slug}.png`;
+        this.element.addEventListener("click", onClick);
     }
 
     onElementLoad = () => {
@@ -579,7 +583,10 @@ buttons.push(new Button("play", 192, 147, () => gameElement.classList.contains("
     gameElement.classList.remove("title");
     gameElement.classList.add("dress-up");
 }));
-buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), () => { console.log("test2"); }));
+const openSettings = () => {
+
+};
+buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), openSettings));
 
 layers.push(new Layer("hair"));
 layers.push(new Layer("underwear"));
@@ -707,9 +714,12 @@ backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
 
-topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") === false));
-topIcons.push(new TopIcon("settings", () => true));
-topIcons.push(new TopIcon("muted", () => true));
-topIcons.push(new TopIcon("unmuted", () => true));
+topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") === false, () => {
+    gameElement.classList.remove("dress-up");
+    gameElement.classList.add("title");
+}));
+topIcons.push(new TopIcon("settings", () => true, openSettings));
+topIcons.push(new TopIcon("muted", () => music.muted, () => { music.muted = false; }));
+topIcons.push(new TopIcon("unmuted", () => music.muted === false, () => { music.muted = true; }));
 
 components.forEach((component) => { component.updateZIndices(); });
