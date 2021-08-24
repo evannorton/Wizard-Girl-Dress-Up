@@ -151,3 +151,11 @@ img,
 .background-icon {
     cursor: url(./cursors/pointer.png), auto;
 }
+
+#settings-volume-notches {
+    cursor: url(./cursors/pointer.png), auto;
+}
+
+.volume-tick {
+    pointer-events: none;
+}

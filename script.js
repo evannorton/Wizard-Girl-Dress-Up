@@ -4,6 +4,8 @@ const aspectRatio = screenWidth / screenHeight;
 
 const retrommoFirst = Math.random() >= .5;
 
+const maxVolume = 15;
+
 const gameElement = document.getElementById("game");
 const topIconsElement = document.getElementById("top-icons");
 const buttonsElement = document.getElementById("buttons");
@@ -14,6 +16,7 @@ const thlurpLinkElement = document.getElementById("thlurp-link");
 const settingsHeadingElement = document.getElementById("settings-heading");
 const settingsVolumeElement = document.getElementById("settings-volume");
 const settingsCensoredElement = document.getElementById("settings-censored");
+const settingsVolumeNotchesElement = document.getElementById("settings-volume-notches");
 const settingsBackgroundElement = document.getElementById("settings-background");
 const settingsBackgroundsElement = document.getElementById("settings-backgrounds");
 const backgroundsElement = document.getElementById("backgrounds");
@@ -27,6 +30,7 @@ const layersComponentsElement = document.getElementById("layers-components");
 
 const music = new Audio("./music.mp3");
 music.loop = true;
+music.volume = .5;
 
 const topIcons = [];
 const buttons = [];
@@ -46,6 +50,8 @@ let loadedSettingsHeadingImage = false;
 let loadedSettingsVolumeImage = false;
 let loadedSettingsCensoredImage = false;
 let loadedSettingsBackgroundImage = false;
+let loadedVolumeEnabledImages = 0;
+let loadedVolumeDisabledImages = 0;
 let loadedBackgroundIconImages = 0;
 let loadedTopIconImages = 0;
 let loadedButtonImages = 0;
@@ -67,6 +73,8 @@ const settingsHeadingImageLoaded = () => loadedSettingsHeadingImage;
 const settingsVolumeImageLoaded = () => loadedSettingsVolumeImage;
 const settingsCensoredImageLoaded = () => loadedSettingsCensoredImage;
 const settingsBackgroundImageLoaded = () => loadedSettingsBackgroundImage;
+const volumeEnabledImagesLoaded = () => loadedVolumeEnabledImages === maxVolume;
+const volumeDisabledImagesLoaded = () => loadedVolumeDisabledImages === maxVolume;
 const backgroundIconImagesLoaded = () => loadedBackgroundIconImages === backgrounds.length;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
@@ -75,7 +83,7 @@ const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === background
 const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -157,6 +165,24 @@ const render = () => {
         button.element.style.width = button.unpressedElement.style.width;
         button.element.style.height = button.pressedElement.style.height;
     });
+    settingsVolumeNotchesElement.style.position = "absolute";
+    settingsVolumeNotchesElement.style.top = getPX(86);
+    settingsVolumeNotchesElement.style.left = getPX(169);
+    settingsVolumeNotchesElement.style.height = getPX(16);
+    settingsVolumeNotchesElement.style.width = getPX(6 * maxVolume - 1);
+    for (let i = 0; i < maxVolume; i++) {
+        const index = i * 2;
+        settingsVolumeNotchesElement.children[index].style.left = getPX(6 * i);
+        settingsVolumeNotchesElement.children[index + 1].style.left = getPX(6 * i);
+        if (music.volume > i / maxVolume) {
+            settingsVolumeNotchesElement.children[index].style.display = "block";
+            settingsVolumeNotchesElement.children[index + 1].style.display = "none";
+        }
+        else {
+            settingsVolumeNotchesElement.children[index].style.display = "none";
+            settingsVolumeNotchesElement.children[index + 1].style.display = "block";
+        }
+    }
     backgrounds.forEach((background) => {
         background.iconElement.style.display = background.containerElement.classList.contains("selected") ? "none" : "block";
     });
@@ -660,6 +686,41 @@ const onBaseElementLoad = () => {
 };
 baseElement.addEventListener("load", onBaseElementLoad);
 baseElement.src = process.env.CENSORED ? "./base-censored.png" : "./base.png";
+
+const onVolumeElementClick = (i) => {
+    const volume = (i + 1) / maxVolume
+    music.volume = i + 1 === Math.round(music.volume * 15) ? 0 : volume;
+};
+for (let i = 0; i < maxVolume; i++) {
+    const volumeEnabledElement = document.createElement("img");
+    volumeEnabledElement.classList.add("volume-tick");
+    settingsVolumeNotchesElement.appendChild(volumeEnabledElement);
+    const onVolumeEnabledElementLoad = () => {
+        loadedVolumeEnabledImages++;
+        initIfImagesLoaded();
+    };
+    volumeEnabledElement.addEventListener("load", onVolumeEnabledElementLoad);
+    volumeEnabledElement.src = "./volume-enabled.png";
+    const volumeDisabledElement = document.createElement("img");
+    volumeDisabledElement.classList.add("volume-tick");
+    settingsVolumeNotchesElement.appendChild(volumeDisabledElement);
+    const onVolumeDisabledElementLoad = () => {
+        loadedVolumeDisabledImages++;
+        initIfImagesLoaded();
+    };
+    volumeDisabledElement.addEventListener("load", onVolumeDisabledElementLoad);
+    volumeDisabledElement.src = "./volume-disabled.png";
+}
+
+const onSettingsVolumeNotchesElementMouseup = (e) => {
+    if (Math.ceil(music.volume * maxVolume) === Math.ceil(e.offsetX / getPXAmount(e.target.style.width) * maxVolume)) {
+        music.volume = 0;
+    }
+    else {
+        music.volume = e.offsetX / getPXAmount(e.target.style.width);
+    }
+};
+settingsVolumeNotchesElement.addEventListener("mouseup", onSettingsVolumeNotchesElementMouseup);
 
 buttons.push(new Button("play", 192, 147, () => gameElement.classList.contains("title"), () => {
     gameElement.classList.remove("title");
