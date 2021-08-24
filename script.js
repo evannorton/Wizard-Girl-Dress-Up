@@ -11,6 +11,7 @@ const logoElement = document.getElementById("logo");
 const creditsElement = document.getElementById("credits");
 const retrommoLinkElement = document.getElementById("retrommo-link");
 const thlurpLinkElement = document.getElementById("thlurp-link");
+const settingsHeadingElement = document.getElementById("settings-heading");
 const backgroundsElement = document.getElementById("backgrounds");
 const roomElement = document.getElementById("room");
 const roomCodeElement = document.getElementById("room-code");
@@ -37,13 +38,14 @@ let loadedCreditsImage = false;
 let loadedRoomImage = false;
 let loadedRoomCodeImage = false;
 let loadedBaseImage = false;
+let loadedSettingsHeadingImage = false;
+let loadedTopIconImages = 0;
 let loadedButtonImages = 0;
 let loadedLayerIconImages = 0;
 let loadedLayerSelectedIconImages = 0;
 let loadedComponentImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
-let loadedTopIconImages = 0;
 
 let enteredSettingsFrom = "title";
 
@@ -53,6 +55,7 @@ const creditsImageLoaded = () => loadedCreditsImage;
 const roomImageLoaded = () => loadedRoomImage;
 const roomCodeImageLoaded = () => loadedRoomCodeImage;
 const baseImageLoaded = () => loadedBaseImage;
+const settingsHeadingImageLoaded = () => loadedSettingsHeadingImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
@@ -60,7 +63,7 @@ const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === background
 const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -115,6 +118,8 @@ const render = () => {
     secondLinkElement.style.left = retrommoFirst ? getPX(308) : getPX(290);
     secondLinkElement.style.width = getPX(secondLinkWidth);
     secondLinkElement.style.height = getPX(12);
+    settingsHeadingElement.style.top = getPX(32);
+    settingsHeadingElement.style.left = getPX(168);
     const filteredTopIcons = topIcons.filter((icon) => icon.condition());
     topIcons.forEach((topIcon) => {
         topIcon.element.style.display = topIcon.condition() ? "block" : "none";
@@ -569,6 +574,13 @@ const onCreditsElementLoad = () => {
 };
 creditsElement.addEventListener("load", onCreditsElementLoad);
 creditsElement.src = retrommoFirst ? "./credits1.png" : "./credits2.png";
+
+const onSettingsHeadingElementLoad = () => {
+    loadedSettingsHeadingImage = true;
+    initIfImagesLoaded();
+}
+settingsHeadingElement.addEventListener("load", onSettingsHeadingElementLoad);
+settingsHeadingElement.src = "./settings-heading.png";
 
 const onRoomElementLoad = () => {
     loadedRoomImage = true;

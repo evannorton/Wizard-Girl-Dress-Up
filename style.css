@@ -143,3 +143,7 @@ img,
     cursor: url(./cursors/pointer.png), auto;
     z-index: 10000;
 }
+
+#game:not(.settings) #settings {
+    display: none;
+}
