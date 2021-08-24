@@ -22,7 +22,8 @@ img,
 .clouds,
 .component,
 .component-inner,
-#components-bg {
+#components-bg,
+#room-code-clickbox {
     position: absolute;
 }
 
@@ -136,5 +137,8 @@ img,
 
 #room-code-clickbox {
     cursor: url(./cursors/pointer.png), auto;
-    position: absolute;
+}
+
+.top-icon {
+    cursor: url(./cursors/pointer.png), auto;
 }

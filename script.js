@@ -5,6 +5,7 @@ const aspectRatio = screenWidth / screenHeight;
 const retrommoFirst = Math.random() >= .5;
 
 const gameElement = document.getElementById("game");
+const topIconsElement = document.getElementById("top-icons");
 const buttonsElement = document.getElementById("buttons");
 const logoElement = document.getElementById("logo");
 const creditsElement = document.getElementById("credits");
@@ -22,6 +23,7 @@ const layersComponentsElement = document.getElementById("layers-components");
 const music = new Audio("./music.mp3");
 music.loop = true;
 
+const topIcons = [];
 const buttons = [];
 const layers = [];
 const components = [];
@@ -41,6 +43,7 @@ let loadedLayerSelectedIconImages = 0;
 let loadedComponentImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
+let loadedTopIconImages = 0;
 
 const buttonImagesLoaded = () => loadedButtonImages === buttons.length * 2;
 const logoImageLoaded = () => loadedLogoImage;
@@ -51,10 +54,11 @@ const baseImageLoaded = () => loadedBaseImage;
 const layerIconImagesLoaded = () => loadedLayerIconImages === layers.length;
 const layerSelectedIconImagesLoaded = () => loadedLayerSelectedIconImages === layers.length;
 const componentImagesLoaded = () => loadedComponentImages === componentPieces.length;
-const backgroundSkyImages = () => loadedBackgroundSkyImages === backgrounds.length;
-const backgroundTreeImages = () => loadedBackgroundTreeImages === backgrounds.length;
+const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === backgrounds.length;
+const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
+const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImages() && backgroundTreeImages();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -109,6 +113,11 @@ const render = () => {
     secondLinkElement.style.left = retrommoFirst ? getPX(308) : getPX(290);
     secondLinkElement.style.width = getPX(secondLinkWidth);
     secondLinkElement.style.height = getPX(12);
+    topIcons.forEach((topIcon, key) => {
+        topIcon.element.style.display = topIcon.condition() ? "block" : "none";
+        topIcon.element.style.top = getPX(12 - Math.floor(getElmHeight(topIcon.element) / 2));
+        topIcon.element.style.left = getPX(4 + key * 4 + getSumOfNumbers(topIcons.slice(0, key).map((icon) => getElmWidth(icon.element))));
+    });
     buttons.forEach((button) => {
         button.element.style.display = button.condition() ? "block" : "none";
         button.unpressedElement.style.top = getPX(0);
@@ -505,6 +514,25 @@ class Background {
     }
 }
 
+class TopIcon {
+    constructor(slug, condition) {
+        this.slug = slug;
+
+        this.condition = condition;
+
+        this.element = document.createElement("img");
+        this.element.classList.add("top-icon");
+        topIconsElement.appendChild(this.element);
+        this.element.addEventListener("load", this.onElementLoad);
+        this.element.src = `./top-icons/${slug}.png`;
+    }
+
+    onElementLoad = () => {
+        loadedTopIconImages++;
+        initIfImagesLoaded();
+    }
+}
+
 if (process.env.DEBUG === false) {
     const onWindowContextmenu = (e) => {
         e.preventDefault();
@@ -678,5 +706,10 @@ componentPieces.push(new ComponentPiece("wizard-socks", components[43], 6));
 backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
+
+topIcons.push(new TopIcon("home", () => true));
+topIcons.push(new TopIcon("settings", () => true));
+topIcons.push(new TopIcon("muted", () => true));
+topIcons.push(new TopIcon("unmuted", () => true));
 
 components.forEach((component) => { component.updateZIndices(); });
