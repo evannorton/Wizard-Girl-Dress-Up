@@ -142,7 +142,7 @@ const render = () => {
     secondLinkElement.style.width = getPX(secondLinkWidth);
     secondLinkElement.style.height = getPX(12);
     settingsHeadingElement.style.top = getPX(32);
-    settingsHeadingElement.style.left = getPX(168);
+    settingsHeadingElement.style.left = getPX(167);
     settingsVolumeElement.style.top = getPX(72);
     settingsVolumeElement.style.left = getPX(168);
     settingsCensoredElement.style.top = getPX(112);
