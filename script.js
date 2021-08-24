@@ -613,7 +613,19 @@ const openSettings = () => {
     gameElement.classList.remove("dress-up");
     gameElement.classList.add("settings");
 };
+const reset = () => {
+    layers[0].select();
+    components.forEach((component) => {
+        component.unsnap();
+        if (getDefaultComponents().every((innerComponent) => innerComponent.slug !== component.slug)) {
+            component.x = component.startX;
+            component.y = component.startY;
+        }
+    });
+    snapDefaultComponents();
+};
 buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), openSettings));
+buttons.push(new Button("reset", 167, 50, () => gameElement.classList.contains("settings"), reset));
 
 layers.push(new Layer("hair"));
 layers.push(new Layer("underwear"));
@@ -740,18 +752,6 @@ componentPieces.push(new ComponentPiece("wizard-socks", components[43], 6));
 backgrounds.push(new Background("day"));
 backgrounds.push(new Background("night"));
 backgrounds.push(new Background("blompton"));
-
-const reset = () => {
-    layers[0].select();
-    components.forEach((component) => {
-        component.unsnap();
-        if (getDefaultComponents().every((innerComponent) => innerComponent.slug !== component.slug)) {
-            component.x = component.startX;
-            component.y = component.startY;
-        }
-    });
-    snapDefaultComponents();
-};
 
 topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") === false, () => {
     gameElement.classList.remove("dress-up");
