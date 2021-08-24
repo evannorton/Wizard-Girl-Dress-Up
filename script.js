@@ -455,6 +455,7 @@ class Component {
         this.mousedownY = e.offsetY / getPXAmount(this.element.style.height) * 100;
         this.layer.select();
         game.addEventListener("mousemove", this.onGameMousemove);
+        render();
     };
     onGameMousemove = (e) => {
         const gameX = e.clientX - gameElement.offsetLeft;
@@ -699,6 +700,7 @@ const onSettingsCensoredBoxElementClick = (e) => {
             }
         });
     }
+    render();
 };
 settingsCensoredBoxElement.addEventListener("click", onSettingsCensoredBoxElementClick);
 
@@ -767,18 +769,21 @@ settingsXElement.src = "./x.png";
 const onSettingsXElementClick = () => {
     gameElement.classList.add(enteredSettingsFrom);
     gameElement.classList.remove("settings");
+    render();
 };
 settingsXElement.addEventListener("click", onSettingsXElementClick);
 
 buttons.push(new Button("play", 192, 147, () => gameElement.classList.contains("title"), () => {
     gameElement.classList.remove("title");
     gameElement.classList.add("dress-up");
+    render();
 }));
 const openSettings = () => {
     enteredSettingsFrom = gameElement.classList.contains("dress-up") ? "dress-up" : "title";
     gameElement.classList.remove("title");
     gameElement.classList.remove("dress-up");
     gameElement.classList.add("settings");
+    render();
 };
 const reset = () => {
     layers[0].select();
@@ -925,9 +930,16 @@ topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") 
     gameElement.classList.remove("settings");
     gameElement.classList.add("title");
     reset();
+    render();
 }));
 topIcons.push(new TopIcon("settings", () => gameElement.classList.contains("settings") === false, openSettings));
-topIcons.push(new TopIcon("muted", () => music.muted, () => { music.muted = false; }));
-topIcons.push(new TopIcon("unmuted", () => music.muted === false, () => { music.muted = true; }));
+topIcons.push(new TopIcon("muted", () => music.muted, () => {
+    music.muted = false;
+    render();
+}));
+topIcons.push(new TopIcon("unmuted", () => music.muted === false, () => {
+    music.muted = true;
+    render();
+}));
 
 components.forEach((component) => { component.updateZIndices(); });
