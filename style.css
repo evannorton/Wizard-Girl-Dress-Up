@@ -52,7 +52,7 @@ img,
     display: none;
 }
 
-#game:not(.dress-up) #components-bg {
+#game:not(.dress-up):not(.settings) #components-bg {
     display: none;
 }
 

@@ -45,6 +45,8 @@ let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
 let loadedTopIconImages = 0;
 
+let enteredSettingsFrom = "title";
+
 const buttonImagesLoaded = () => loadedButtonImages === buttons.length * 2;
 const logoImageLoaded = () => loadedLogoImage;
 const creditsImageLoaded = () => loadedCreditsImage;
@@ -594,7 +596,10 @@ buttons.push(new Button("play", 192, 147, () => gameElement.classList.contains("
     gameElement.classList.add("dress-up");
 }));
 const openSettings = () => {
-
+    enteredSettingsFrom = gameElement.classList.contains("dress-up") ? "dress-up" : "title";
+    gameElement.classList.remove("title");
+    gameElement.classList.remove("dress-up");
+    gameElement.classList.add("settings");
 };
 buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), openSettings));
 
@@ -738,10 +743,11 @@ const reset = () => {
 
 topIcons.push(new TopIcon("home", () => gameElement.classList.contains("title") === false, () => {
     gameElement.classList.remove("dress-up");
+    gameElement.classList.remove("settings");
     gameElement.classList.add("title");
     reset();
 }));
-topIcons.push(new TopIcon("settings", () => true, openSettings));
+topIcons.push(new TopIcon("settings", () => gameElement.classList.contains("settings") === false, openSettings));
 topIcons.push(new TopIcon("muted", () => music.muted, () => { music.muted = false; }));
 topIcons.push(new TopIcon("unmuted", () => music.muted === false, () => { music.muted = true; }));
 
