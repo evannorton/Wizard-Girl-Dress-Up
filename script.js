@@ -28,6 +28,7 @@ const baseElement = document.getElementById("base");
 const componentsBGElement = document.getElementById("components-bg");
 const layersIconsElement = document.getElementById("layers-icons");
 const layersComponentsElement = document.getElementById("layers-components");
+const settingsXElement = document.getElementById("settings-x");
 
 const music = new Audio("./music.mp3");
 music.loop = true;
@@ -62,6 +63,7 @@ let loadedLayerSelectedIconImages = 0;
 let loadedComponentImages = 0;
 let loadedBackgroundSkyImages = 0;
 let loadedBackgroundTreeImages = 0;
+let loadedSettingsXImage = false;
 
 let enteredSettingsFrom = "title";
 
@@ -85,8 +87,9 @@ const componentImagesLoaded = () => loadedComponentImages === componentPieces.le
 const backgroundSkyImagesLoaded = () => loadedBackgroundSkyImages === backgrounds.length;
 const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrounds.length;
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
+const settingsXImageLoaded = () => loadedSettingsXImage;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsCensoredBoxImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsCensoredBoxImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded() && settingsXImageLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -168,6 +171,8 @@ const render = () => {
         button.element.style.width = button.unpressedElement.style.width;
         button.element.style.height = button.pressedElement.style.height;
     });
+    settingsXElement.style.left = getPX(337);
+    settingsXElement.style.top = getPX(32);
     settingsCensoredBoxElement.style.left = getPX(167);
     settingsCensoredBoxElement.style.top = getPX(126);
     settingsVolumeNotchesElement.style.position = "absolute";
@@ -752,6 +757,18 @@ const onSettingsVolumeNotchesElementMouseup = (e) => {
     }
 };
 settingsVolumeNotchesElement.addEventListener("mouseup", onSettingsVolumeNotchesElementMouseup);
+
+const onSettingsXElementLoad = () => {
+    loadedSettingsXImage = true;
+    initIfImagesLoaded();
+};
+settingsXElement.addEventListener("load", onSettingsXElementLoad);
+settingsXElement.src = "./x.png";
+const onSettingsXElementClick = () => {
+    gameElement.classList.add(enteredSettingsFrom);
+    gameElement.classList.remove("settings");
+};
+settingsXElement.addEventListener("click", onSettingsXElementClick);
 
 buttons.push(new Button("play", 192, 147, () => gameElement.classList.contains("title"), () => {
     gameElement.classList.remove("title");

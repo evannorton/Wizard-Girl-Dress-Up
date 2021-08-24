@@ -171,3 +171,7 @@ img,
 #game.censored .required-for-censored .component-inner {
     pointer-events: none;
 }
+
+#settings-x {
+    cursor: url(./cursors/pointer.png), auto;
+}
