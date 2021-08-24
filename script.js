@@ -700,7 +700,7 @@ componentPieces.push(new ComponentPiece("heels", components[32], 7));
 componentPieces.push(new ComponentPiece("school-shoes", components[33], 7));
 componentPieces.push(new ComponentPiece("mask", components[34], 3));
 componentPieces.push(new ComponentPiece("eyepatch", components[35], 3));
-componentPieces.push(new ComponentPiece("glove", components[36], 3));
+componentPieces.push(new ComponentPiece("glove", components[36], 10));
 componentPieces.push(new ComponentPiece("sunglasses", components[37], 3));
 componentPieces.push(new ComponentPiece("rugby-socks", components[38], 6));
 componentPieces.push(new ComponentPiece("stockings-back", components[39], 1));
