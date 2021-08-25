@@ -33,7 +33,7 @@ const settingsXElement = document.getElementById("settings-x");
 
 const music = new Audio("./music.mp3");
 music.loop = true;
-music.volume = .5;
+music.volume = 7 / 15;
 
 const topIcons = [];
 const buttons = [];
