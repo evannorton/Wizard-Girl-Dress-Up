@@ -25,6 +25,7 @@ const roomElement = document.getElementById("room");
 const roomCodeElement = document.getElementById("room-code");
 const roomCodeClickboxElement = document.getElementById("room-code-clickbox");
 const baseElement = document.getElementById("base");
+const dordElement = document.getElementById("dord");
 const componentsBGElement = document.getElementById("components-bg");
 const layersIconsElement = document.getElementById("layers-icons");
 const layersComponentsElement = document.getElementById("layers-components");
@@ -48,6 +49,7 @@ let loadedCreditsImage = false;
 let loadedRoomImage = false;
 let loadedRoomCodeImage = false;
 let loadedBaseImage = false;
+let loadedDordImage = false;
 let loadedSettingsHeadingImage = false;
 let loadedSettingsVolumeImage = false;
 let loadedSettingsCensoredImage = false;
@@ -73,6 +75,7 @@ const creditsImageLoaded = () => loadedCreditsImage;
 const roomImageLoaded = () => loadedRoomImage;
 const roomCodeImageLoaded = () => loadedRoomCodeImage;
 const baseImageLoaded = () => loadedBaseImage;
+const dordImageLoaded = () => loadedDordImage;
 const settingsHeadingImageLoaded = () => loadedSettingsHeadingImage;
 const settingsVolumeImageLoaded = () => loadedSettingsVolumeImage;
 const settingsCensoredImageLoaded = () => loadedSettingsCensoredImage;
@@ -89,7 +92,7 @@ const backgroundTreeImagesLoaded = () => loadedBackgroundTreeImages === backgrou
 const topIconImagesLoaded = () => loadedTopIconImages === topIcons.length;
 const settingsXImageLoaded = () => loadedSettingsXImage;
 
-const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsCensoredBoxImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded() && settingsXImageLoaded();
+const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && dordImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsCensoredBoxImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded() && settingsXImageLoaded();
 
 const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
@@ -206,6 +209,8 @@ const render = () => {
     roomCodeClickboxElement.style.height = getPX(15);
     baseElement.style.left = getPX(getOffset() + 3);
     baseElement.style.top = getPX(getOffset() + 15);
+    dordElement.style.left = getPX(getOffset() + 3);
+    dordElement.style.top = getPX(getOffset() - 18);
     componentsBGElement.style.left = getPX(getIconsRegionXStart() - getComponentsBGPadding());
     componentsBGElement.style.top = getPX(getOffset() - getComponentsBGPadding());
     componentsBGElement.style.height = getPX(screenHeight - getOffset() * 2 + getComponentsBGPadding() * 2);
@@ -502,6 +507,10 @@ class Component {
                 componentPiece.element.style.zIndex = componentPiece.zIndex;
             }
         });
+        if (components.filter((component) => component.element.classList.contains("snapped")).length === components.length) {
+            gameElement.classList.add("dord");
+            components.forEach((component) => { component.unsnap() });
+        }
         render();
     }
     updateZIndices = () => {
@@ -728,6 +737,14 @@ const onBaseElementLoad = () => {
 baseElement.addEventListener("load", onBaseElementLoad);
 baseElement.src = process.env.CENSORED ? "./base-censored.png" : "./base.png";
 
+const onDordElementLoad = () => {
+    loadedDordImage = true;
+    initIfImagesLoaded();
+};
+dordElement.addEventListener("load", onDordElementLoad);
+dordElement.src = "./dord.png";
+
+
 const onVolumeElementClick = (i) => {
     const volume = (i + 1) / maxVolume
     music.volume = i + 1 === Math.round(music.volume * 15) ? 0 : volume;
@@ -798,7 +815,9 @@ const reset = () => {
             component.y = component.startY;
         }
     });
+    gameElement.classList.remove("dord");
     snapDefaultComponents();
+    render();
 };
 buttons.push(new Button("settings", 268, 147, () => gameElement.classList.contains("title"), openSettings));
 buttons.push(new Button("reset", 167, 46, () => gameElement.classList.contains("settings"), reset));

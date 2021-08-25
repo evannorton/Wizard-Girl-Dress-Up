@@ -89,6 +89,10 @@ img,
     z-index: 2;
 }
 
+#game.dord #base {
+    display: none;
+}
+
 #components-bg {
     background-color: rgba(0, 0, 0, .5);
 }
@@ -117,6 +121,10 @@ img,
 
 .component {
     pointer-events: none;
+}
+
+#game.dord .component {
+    display: none;
 }
 
 .component.selected {
@@ -174,4 +182,10 @@ img,
 
 #settings-x {
     cursor: url(./cursors/pointer.png), auto;
+}
+
+#game:not(.dord) #dord {
+    display: none;
+    pointer-events: none;
+    z-index: 2;
 }
