@@ -266,6 +266,7 @@ const onWindowKeydown = (e) => {
                 break;
         }
         heldKeys.push(e.key);
+        render();
     }
 };
 
