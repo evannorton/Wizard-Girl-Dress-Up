@@ -37,7 +37,7 @@ img,
 }
 
 .button {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 .button.pressed .unpressed-button {
@@ -71,7 +71,7 @@ img,
 }
 
 .link {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 .background:not(.selected) {
@@ -98,7 +98,7 @@ img,
 }
 
 .layer-icon {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
     z-index: 10000;
 }
 
@@ -107,7 +107,7 @@ img,
 }
 
 .layer-selected-icon {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
     z-index: 10000;
 }
 
@@ -132,7 +132,7 @@ img,
 }
 
 .component-inner {
-    cursor: url(./cursors/move.png), auto;
+    cursor: url(./cursors/move.png) 12 12, move;
     height: 100%;
     pointer-events: all;
     width: 100%;
@@ -144,11 +144,11 @@ img,
 }
 
 #room-code-clickbox {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 .top-icon {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
     z-index: 10000;
 }
 
@@ -157,11 +157,11 @@ img,
 }
 
 .background-icon {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 #settings-volume-notches {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 .volume-tick {
@@ -169,7 +169,7 @@ img,
 }
 
 #settings-censored-box {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 #settings-censored-box.checked {
@@ -181,7 +181,7 @@ img,
 }
 
 #settings-x {
-    cursor: url(./cursors/pointer.png), auto;
+    cursor: url(./cursors/pointer.png) 6 0, pointer;
 }
 
 #game:not(.dord) #dord {
