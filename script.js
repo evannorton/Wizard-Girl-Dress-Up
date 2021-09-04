@@ -94,7 +94,7 @@ const settingsXImageLoaded = () => loadedSettingsXImage;
 
 const imagesLoaded = () => buttonImagesLoaded() && logoImageLoaded() && creditsImageLoaded() && roomImageLoaded() && roomCodeImageLoaded() && baseImageLoaded() && dordImageLoaded() && settingsHeadingImageLoaded() && settingsVolumeImageLoaded() && settingsCensoredImageLoaded() && settingsCensoredBoxImageLoaded() && settingsBackgroundImageLoaded() && backgroundIconImagesLoaded() && volumeEnabledImagesLoaded() && volumeDisabledImagesLoaded() && layerIconImagesLoaded() && layerSelectedIconImagesLoaded() && componentImagesLoaded() && backgroundSkyImagesLoaded() && backgroundTreeImagesLoaded() && topIconImagesLoaded() && settingsXImageLoaded();
 
-const getScale = () => Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
+const getScale = () => 3 // Math.floor(innerWidth / innerHeight > aspectRatio ? innerHeight / screenHeight : innerWidth / screenWidth);
 const getPX = (px) => `${px * getScale()}px`;
 const getPXAmount = (px) => Number(px.replace("px", ""));
 const getElmWidth = (elm) => Number(elm.getAttribute("width"));
