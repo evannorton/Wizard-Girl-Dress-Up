@@ -524,6 +524,7 @@ class Component {
         if (components.filter((component) => component.element.classList.contains("snapped")).length === components.length) {
             gameElement.classList.add("dord");
             components.forEach((component) => { component.unsnap() });
+            unlockMedal(65035);
         }
         render();
     }
