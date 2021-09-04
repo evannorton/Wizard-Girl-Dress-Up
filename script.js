@@ -1,3 +1,15 @@
+const ngio = new Newgrounds.io.core(process.env.APP_ID, process.env.ENCRYPTION_KEY);
+
+if (process.env.DEBUG) {
+    ngio.debug = true;
+}
+
+const unlockMedal = (medalID) => {
+    if (ngio.user !== null) {
+        ngio.callComponent("Medal.unlock", { id: medalID });
+    }
+};
+
 const screenWidth = 384;
 const screenHeight = 216;
 const aspectRatio = screenWidth / screenHeight;
@@ -308,6 +320,7 @@ const init = () => {
     const onRoomCodeClickboxElementClick = () => {
         roomCodeElement.classList.add("revealed");
         roomCodeClickboxElement.remove();
+        unlockMedal(65034);
     };
     roomCodeClickboxElement.addEventListener("click", onRoomCodeClickboxElementClick);
     setInterval(() => {
