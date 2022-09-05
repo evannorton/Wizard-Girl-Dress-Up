@@ -119,6 +119,10 @@ img,
     display: none;
 }
 
+.component.hidden-from-list:not(.snapped) {
+    display: none;
+}
+
 .component {
     pointer-events: none;
 }

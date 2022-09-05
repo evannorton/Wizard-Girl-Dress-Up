@@ -57,6 +57,7 @@ ngio.getValidSession(() => {
     const backgrounds = [];
 
     const heldKeys = [];
+    const recentKeys = [];
 
     let loadedLogoImage = false;
     let loadedCreditsImage = false;
@@ -282,6 +283,22 @@ ngio.getValidSession(() => {
             heldKeys.push(e.key);
             render();
         }
+        const key = e.key.toLowerCase();
+        recentKeys.push(key);
+        const code = "covalence";
+        const keys = [...recentKeys].slice(recentKeys.length - code.length);
+        if (code.split("").every((codePiece, index) => codePiece === keys[index])) {
+            components.forEach((component) => {
+                if (component.layer === layers[2]) {
+                    component.unsnap();
+                }
+            });
+            components[28].snap();
+        }
+        const diff = recentKeys.length - code.length;
+        if (diff > 0) {
+            recentKeys.splice(diff);
+        }
     };
 
     const onWindowKeyup = (e) => {
@@ -295,7 +312,7 @@ ngio.getValidSession(() => {
         components[8],
         components[9],
         components[20],
-        components[43]
+        components[44]
     ];
 
     const snapDefaultComponents = () => {
@@ -437,7 +454,7 @@ ngio.getValidSession(() => {
     }
 
     class Component {
-        constructor(slug, layer, startX, startY, snapX, snapY, clickLeft, clickTop, clickRight, clickBottom, requiredForCensored) {
+        constructor(slug, layer, startX, startY, snapX, snapY, clickLeft, clickTop, clickRight, clickBottom, requiredForCensored, hiddenFromList) {
             this.slug = slug;
             this.layer = layer;
             this.startX = startX;
@@ -460,6 +477,9 @@ ngio.getValidSession(() => {
             this.element.classList.add("component");
             if (this.requiredForCensored) {
                 this.element.classList.add("required-for-censored");
+            }
+            if (hiddenFromList) {
+                this.element.classList.add("hidden-from-list")
             }
 
             this.innerElement = document.createElement("div");
@@ -523,7 +543,8 @@ ngio.getValidSession(() => {
                     componentPiece.element.style.zIndex = componentPiece.zIndex;
                 }
             });
-            if (components.filter((component) => component.element.classList.contains("snapped")).length === components.length) {
+            const totalLength = components[28].element.classList.contains("snapped") ? components.length : components.length - 1;
+            if (components.filter((component) => component.element.classList.contains("snapped")).length === totalLength) {
                 gameElement.classList.add("dord");
                 components.forEach((component) => { component.unsnap() });
                 unlockMedal(65035);
@@ -873,6 +894,7 @@ ngio.getValidSession(() => {
     components.push(new Component("kimono", layers[2], 44, 48, 14, 47, 0, 0, 0, 0, false));
     components.push(new Component("long-skirt", layers[2], -6, 76, 7, 93, 0, 0, 0, 0, false));
     components.push(new Component("uniform-shirt", layers[2], 15, 30, 27, 47, 0, 0, 0, 0, false));
+    components.push(new Component("covalence-shirt", layers[2], 0, 0, 27, 47, 0, 0, 0, 0, false, true));
     components.push(new Component("flipflops", layers[3], 92, 108, -1, 118, 0, 0, 0, 0, false));
     components.push(new Component("rollerskates", layers[3], -4, 88, 0, 116, 0, 0, 0, 0, false));
     components.push(new Component("converses", layers[3], 94, 68, 0, 118, 0, 0, 0, 0, false));
@@ -943,23 +965,25 @@ ngio.getValidSession(() => {
     componentPieces.push(new ComponentPiece("long-skirt-front", components[26], 8));
     componentPieces.push(new ComponentPiece("uniform-shirt-back", components[27], 1));
     componentPieces.push(new ComponentPiece("uniform-shirt-front", components[27], 8));
-    componentPieces.push(new ComponentPiece("flipflops", components[28], 7));
-    componentPieces.push(new ComponentPiece("rollerskates", components[29], 7));
-    componentPieces.push(new ComponentPiece("converses", components[30], 7));
-    componentPieces.push(new ComponentPiece("boots", components[31], 7));
-    componentPieces.push(new ComponentPiece("heels", components[32], 7));
-    componentPieces.push(new ComponentPiece("school-shoes", components[33], 7));
-    componentPieces.push(new ComponentPiece("mask", components[34], 3));
-    componentPieces.push(new ComponentPiece("eyepatch", components[35], 3));
-    componentPieces.push(new ComponentPiece("glove", components[36], 10));
-    componentPieces.push(new ComponentPiece("sunglasses", components[37], 3));
-    componentPieces.push(new ComponentPiece("rugby-socks", components[38], 6));
-    componentPieces.push(new ComponentPiece("stockings-back", components[39], 1));
-    componentPieces.push(new ComponentPiece("stockings-front", components[39], 6));
-    componentPieces.push(new ComponentPiece("school-socks", components[40], 6));
-    componentPieces.push(new ComponentPiece("garter", components[41], 6));
-    componentPieces.push(new ComponentPiece("short-socks", components[42], 6));
-    componentPieces.push(new ComponentPiece("wizard-socks", components[43], 6));
+    componentPieces.push(new ComponentPiece("covalence-shirt-back", components[28], 1));
+    componentPieces.push(new ComponentPiece("covalence-shirt-front", components[28], 8));
+    componentPieces.push(new ComponentPiece("flipflops", components[29], 7));
+    componentPieces.push(new ComponentPiece("rollerskates", components[30], 7));
+    componentPieces.push(new ComponentPiece("converses", components[31], 7));
+    componentPieces.push(new ComponentPiece("boots", components[32], 7));
+    componentPieces.push(new ComponentPiece("heels", components[33], 7));
+    componentPieces.push(new ComponentPiece("school-shoes", components[34], 7));
+    componentPieces.push(new ComponentPiece("mask", components[35], 3));
+    componentPieces.push(new ComponentPiece("eyepatch", components[36], 3));
+    componentPieces.push(new ComponentPiece("glove", components[37], 10));
+    componentPieces.push(new ComponentPiece("sunglasses", components[38], 3));
+    componentPieces.push(new ComponentPiece("rugby-socks", components[39], 6));
+    componentPieces.push(new ComponentPiece("stockings-back", components[40], 1));
+    componentPieces.push(new ComponentPiece("stockings-front", components[40], 6));
+    componentPieces.push(new ComponentPiece("school-socks", components[41], 6));
+    componentPieces.push(new ComponentPiece("garter", components[42], 6));
+    componentPieces.push(new ComponentPiece("short-socks", components[43], 6));
+    componentPieces.push(new ComponentPiece("wizard-socks", components[44], 6));
 
     backgrounds.push(new Background("day"));
     backgrounds.push(new Background("night"));
