@@ -286,7 +286,8 @@ ngio.getValidSession(() => {
         const key = e.key.toLowerCase();
         recentKeys.push(key);
         const code = "covalence";
-        const keys = [...recentKeys].slice(recentKeys.length - code.length);
+        const diff = recentKeys.length - code.length;
+        const keys = diff > 0 ? recentKeys.slice(diff) : recentKeys;
         if (code.split("").every((codePiece, index) => codePiece === keys[index])) {
             components.forEach((component) => {
                 if (component.layer === layers[2]) {
@@ -295,7 +296,6 @@ ngio.getValidSession(() => {
             });
             components[28].snap();
         }
-        const diff = recentKeys.length - code.length;
         if (diff > 0) {
             recentKeys.splice(diff);
         }
