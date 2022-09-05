@@ -295,6 +295,7 @@ ngio.getValidSession(() => {
                 }
             });
             components[28].snap();
+            unlockMedal(70546);
         }
         if (diff === 0) {
             recentKeys.splice(0, diff);
