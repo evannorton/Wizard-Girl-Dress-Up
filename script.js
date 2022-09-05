@@ -290,8 +290,8 @@ ngio.getValidSession(() => {
         const keys = diff > 0 ? recentKeys.slice(diff) : recentKeys;
         if (code.split("").every((codePiece, index) => codePiece === keys[index])) {
             components.forEach((component) => {
-                if (component.layer === layers[2]) {
-                    component.unsnap();
+                if (component.layer === layers[2] && component.element.classList.contains("snapped")) {
+                    component.unsnap(true);
                 }
             });
             components[28].snap();
@@ -522,7 +522,7 @@ ngio.getValidSession(() => {
                 this.snap();
             }
             else {
-                this.unsnap();
+                this.unsnap(false);
             }
             gameElement.classList.remove("dragging");
             this.element.classList.remove("selected");
@@ -546,7 +546,7 @@ ngio.getValidSession(() => {
             const totalLength = components[28].element.classList.contains("snapped") ? components.length : components.length - 1;
             if (components.filter((component) => component.element.classList.contains("snapped")).length === totalLength) {
                 gameElement.classList.add("dord");
-                components.forEach((component) => { component.unsnap() });
+                components.forEach((component) => { component.unsnap(false); });
                 unlockMedal(65035);
             }
             render();
@@ -561,10 +561,12 @@ ngio.getValidSession(() => {
             this.element.style.zIndex = Math.max(...indices) + 100;
             this.innerElement.style.zIndex = Math.max(...indices) + 100;
         }
-        unsnap = () => {
+        unsnap = (forceReset) => {
             this.element.classList.remove("snapped");
-            this.x = this.startX;
-            this.y = this.startY;
+            if (this.layer.componentsElement.classList.contains("selected") === false || forceReset) {
+                this.x = this.startX;
+                this.y = this.startY;
+            }
             this.updateZIndices();
             componentPieces.forEach((componentPiece) => {
                 if (componentPiece.component.slug === this.slug) {
@@ -845,7 +847,7 @@ ngio.getValidSession(() => {
     const reset = () => {
         layers[0].select();
         components.forEach((component) => {
-            component.unsnap();
+            component.unsnap(false);
             if (getDefaultComponents().every((innerComponent) => innerComponent.slug !== component.slug)) {
                 component.x = component.startX;
                 component.y = component.startY;
