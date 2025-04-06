@@ -149,6 +149,7 @@ img,
 
 #room-code-clickbox {
     cursor: url(./cursors/pointer.png) 7 2, pointer;
+    pointer-events: none;
 }
 
 .top-icon {
